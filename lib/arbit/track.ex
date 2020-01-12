@@ -15,7 +15,8 @@ defmodule Arbit.Track do
 
   def upsert_conversion do
     %Currency{}
-    |> struct(%{pair: "USDINR", amount: Currency.fetch_conversion})  # Merge map into Currency struct
+    |> struct(%{pair: "USD-INR"})  # Merge map into Currency struct
+    |> struct(%{amount: Currency.fetch_conversion()})
     |> Repo.insert(on_conflict: {:replace, [:amount, :updated_at]}, conflict_target: :pair)
   end
 
