@@ -1,6 +1,7 @@
 defmodule Arbit.Track.Coinbase do
   use Ecto.Schema
   # import Ecto.Changeset
+  alias __MODULE__
 
   schema "coinbase" do
     field :product, :string
@@ -11,22 +12,54 @@ defmodule Arbit.Track.Coinbase do
   end
 
   @doc """
-    Returns API URL
+    Returns Coinbase's list of products
   """
-  def url do
-    base_url = "https://api.pro.coinbase.com/products/"
-    product = "BTC-USD"
-
-    "#{base_url}#{product}/ticker"
+  def product_list do
+    ~w(
+      BTC-USD
+      ETH-USD
+      LTC-USD
+      BCH-USD
+      EOS-USD
+      DASH-USD
+      ETC-USD
+      XLM-USD
+      XTZ-USD
+      OXT-USD
+      REP-USD
+      XRP-USD
+      LINK-USD
+      ZRX-USD
+    )
   end
 
   @doc """
-    Calls API and returns coin price in Float even if price is Integer
+    Returns API URL of a given product
   """
-  def fetch_price do
-    %{body: body} = HTTPoison.get! url()
-    %{price: price} = Jason.decode!(body, [keys: :atoms])
-    Float.parse(price) |> elem(0)
+  def url(product) do
+    "https://api.coinbase.com/v2/prices/#{product}/spot"
+  end
+
+  @doc """
+    Calls API and returns struct of given product and price in Float even if price is Integer
+  """
+  def fetch_price(product) do
+    %{body: body} = HTTPoison.get! url(product)
+    %{data: %{amount: amount}} = Jason.decode!(body, [keys: :atoms])
+
+    %Coinbase{}
+    |> struct(%{product: product})
+    |> struct(%{price_usd: Float.parse(amount) |> elem(0)})
+  end
+
+  @doc """
+    Gets the entire Coinbase portfolio with each product with its price_usd
+    Every task returns a tuple where the first element is either :ok or :error
+  """
+  def fetch_portfolio do
+    product_list()
+    |> Task.async_stream(&fetch_price/1)
+    |> Enum.map(fn {:ok, result} -> result end)
   end
 end
 

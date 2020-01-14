@@ -20,15 +20,15 @@ defmodule Arbit.Track do
     |> Repo.insert(on_conflict: {:replace, [:amount, :updated_at]}, conflict_target: :pair)
   end
 
-  def upsert_coinbase do
-    price_usd = Coinbase.fetch_price()
-    price_inr = (price_usd * get_conversion_amount("USDINR")) |> Float.round(2)
+  def upsert_coinbase_portfolio do
+    conversion_amount = get_conversion_amount("USD-INR")
 
-    %Coinbase{}
-    |> struct(%{product: "BTC-USD"})
-    |> struct(%{price_usd: price_usd})
-    |> struct(%{price_inr: price_inr})
-    |> Repo.insert(on_conflict: {:replace, [:price_usd, :price_inr, :updated_at]}, conflict_target: :product)
+    # Merge price_inr in each product in the portfolio
+    # & Parallely upsert each product in coinbase table
+    Coinbase.fetch_portfolio()
+    |> Enum.map(fn %{price_usd: price_usd} = product -> struct!(product, %{price_inr: (price_usd * conversion_amount) |> Float.round(2)}) end)
+    |> Task.async_stream(&Repo.insert(&1, on_conflict: {:replace, [:price_usd, :price_inr, :updated_at]}, conflict_target: :product))
+    |> Enum.map(fn {:ok, result} -> result end)
   end
 
   ####################
