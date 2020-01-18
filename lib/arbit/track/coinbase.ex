@@ -45,11 +45,15 @@ defmodule Arbit.Track.Coinbase do
   """
   def fetch_price(product) do
     %{body: body} = HTTPoison.get! url(product)
-    %{data: %{amount: amount}} = Jason.decode!(body, [keys: :atoms])
+
+    amount = case Jason.decode!(body, [keys: :atoms]) do
+                %{data: %{amount: amount}} -> amount
+                _ -> 0
+              end
 
     %Coinbase{}
     |> struct(%{product: product})
-    |> struct(%{price_usd: Float.parse(amount) |> elem(0)})
+    |> struct(%{price_usd: Float.parse(amount) |> elem(0) |> Float.round(2)})
   end
 
   @doc """
@@ -62,6 +66,3 @@ defmodule Arbit.Track.Coinbase do
     |> Enum.map(fn {:ok, result} -> result end)
   end
 end
-
-
-
