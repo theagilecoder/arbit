@@ -28,7 +28,10 @@ defmodule Arbit.Track.Currency do
   """
   def fetch_conversion do
     %{body: body} = HTTPoison.get! url()
-    %{data: %{rates: %{INR: conversion}}} = Jason.decode!(body, [keys: :atoms])
-    conversion |> String.to_float() |> Float.round(2)
+
+    case Jason.decode!(body, [keys: :atoms]) do
+      %{data: %{rates: %{INR: conversion}}} -> conversion |> String.to_float() |> Float.round(2)
+      _ -> 0
+    end
   end
 end
