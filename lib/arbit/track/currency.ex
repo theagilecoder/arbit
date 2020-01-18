@@ -20,12 +20,7 @@ defmodule Arbit.Track.Currency do
     Returns API URL
   """
   def url do
-    base_url = "http://apilayer.net/api/live"
-    access_key = Application.get_env(:arbit, :CURRENCY_LAYER_API_KEY)
-    source = "USD"
-    currencies = "INR"
-
-    "#{base_url}?access_key=#{access_key}&source=#{source}&currencies=#{currencies}"
+    "https://api.coinbase.com/v2/exchange-rates"
   end
 
   @doc """
@@ -33,7 +28,7 @@ defmodule Arbit.Track.Currency do
   """
   def fetch_conversion do
     %{body: body} = HTTPoison.get! url()
-    %{quotes: %{USDINR: conversion}} = Jason.decode!(body, [keys: :atoms])
-    Float.round(conversion, 2)
+    %{data: %{rates: %{INR: conversion}}} = Jason.decode!(body, [keys: :atoms])
+    conversion |> String.to_float() |> Float.round(2)
   end
 end
