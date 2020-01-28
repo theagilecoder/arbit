@@ -16,4 +16,3 @@ config :arbit, ArbitWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
-import_config "dev.secret.exs"
