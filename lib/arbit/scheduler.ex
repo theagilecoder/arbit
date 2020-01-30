@@ -16,12 +16,14 @@ defmodule Arbit.Scheduler do
   # Runs the job and then schedules the job
   def handle_info(:work, state) do
     Track.upsert_conversion()
+    Track.upsert_coinbase_portfolio()
+    Track.upsert_bitbns_portfolio()
     schedule_work()
     {:noreply, state}
   end
 
   # Defines how many ms to wait
   defp schedule_work() do
-    Process.send_after(self(), :work, 5 * 1000)
+    Process.send_after(self(), :work, 1800 * 1000)    # 30 mins
   end
 end
