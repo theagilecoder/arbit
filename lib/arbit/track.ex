@@ -6,9 +6,17 @@ defmodule Arbit.Track do
   import Ecto.Query, warn: false
   alias Arbit.Repo
 
-  alias Arbit.Track.Currency
-  alias Arbit.Track.Coinbase
-  alias Arbit.Track.Bitbns
+  alias Arbit.Track.{Currency, Coinbase, Bitbns, Result}
+
+  ############
+  #  Result  #
+  ############
+
+  def upsert_results do
+    Result.compute_results()
+    |> Task.async_stream(&Repo.insert(&1, on_conflict: {:replace, [:price1, :price2, :difference, :updated_at]}, conflict_target: [:exchange1, :exchange2, :coin]))
+    |> Enum.map(fn {:ok, result} -> result end)
+  end
 
   ############
   #  Bitbns  #
@@ -23,6 +31,10 @@ defmodule Arbit.Track do
     |> Enum.map(fn %{price_inr: price_inr} = product -> struct!(product, %{price_usd: (price_inr * 1/conversion_amount) |> Float.round(6)}) end)
     |> Task.async_stream(&Repo.insert(&1, on_conflict: {:replace, [:price_usd, :price_inr, :updated_at]}, conflict_target: :product))
     |> Enum.map(fn {:ok, result} -> result end)
+  end
+
+  def get_bitbns_product(product) do
+    Repo.get_by(Bitbns, %{product: product})
   end
 
   #############
@@ -45,6 +57,8 @@ defmodule Arbit.Track do
     |> struct(attrs)  # Merge map into Currency struct
     |> Repo.insert(on_conflict: {:replace, [:price_usd, :updated_at]}, conflict_target: :product)
   end
+
+  def list_coinbase,            do: Repo.all(Coinbase)
 
   ####################
   #     Currency     #
