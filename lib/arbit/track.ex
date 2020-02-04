@@ -13,7 +13,7 @@ defmodule Arbit.Track do
   ############
 
   def upsert_results do
-    Result.compute_results()
+    Result.compute_results("Coinbase", "Bitbns")
     |> Task.async_stream(&Repo.insert(&1, on_conflict: {:replace, [:price1, :price2, :difference, :updated_at]}, conflict_target: [:exchange1, :exchange2, :coin]))
     |> Enum.map(fn {:ok, result} -> result end)
   end
