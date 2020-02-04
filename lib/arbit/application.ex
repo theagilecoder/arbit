@@ -7,7 +7,7 @@ defmodule Arbit.Application do
     children = [
       Arbit.Repo,
       ArbitWeb.Endpoint,
-      # worker(Arbit.Scheduler, [])
+      worker(Arbit.Scheduler, [])
     ]
 
     opts = [strategy: :one_for_one, name: Arbit.Supervisor]

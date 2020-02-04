@@ -18,6 +18,7 @@ defmodule Arbit.Scheduler do
     Track.upsert_conversion()
     Track.upsert_coinbase_portfolio()
     Track.upsert_bitbns_portfolio()
+    Track.upsert_results()
     schedule_work()
     {:noreply, state}
   end
