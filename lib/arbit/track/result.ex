@@ -55,6 +55,7 @@ defmodule Arbit.Track.Result do
   defp get_exchange2(product, exchange2) do
     case exchange2 do
       "Bitbns" -> Track.get_bitbns_product(product)
+      "Wazirx" -> Track.get_wazirx_product(product)
       _        -> nil
     end
   end

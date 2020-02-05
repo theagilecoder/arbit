@@ -16,6 +16,10 @@ defmodule Arbit.Track do
     Result.compute_results("Coinbase", "Bitbns")
     |> Task.async_stream(&Repo.insert(&1, on_conflict: {:replace, [:price1, :price2, :difference, :updated_at]}, conflict_target: [:exchange1, :exchange2, :coin]))
     |> Enum.map(fn {:ok, result} -> result end)
+
+    Result.compute_results("Coinbase", "Wazirx")
+    |> Task.async_stream(&Repo.insert(&1, on_conflict: {:replace, [:price1, :price2, :difference, :updated_at]}, conflict_target: [:exchange1, :exchange2, :coin]))
+    |> Enum.map(fn {:ok, result} -> result end)
   end
 
   ############
@@ -26,6 +30,10 @@ defmodule Arbit.Track do
     Wazirx.fetch_portfolio()
     |> Task.async_stream(&Repo.insert(&1, on_conflict: {:replace, [:price_usd, :price_inr, :updated_at]}, conflict_target: :product))
     |> Enum.map(fn {:ok, result} -> result end)
+  end
+
+  def get_wazirx_product(product) do
+    Repo.get_by(Wazirx, %{product: product})
   end
 
   ############
