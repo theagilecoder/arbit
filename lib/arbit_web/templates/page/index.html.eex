@@ -8,6 +8,6 @@
     <%=link("Best Arbitrage Deals to send from USA to India", to: "/usatoindia", class: "button")%>
   </article>
   <article class="column">
-    <%=link("Best Deals to send from India to USA", to: "/usatoindia", class: "button button-outline")%>
+    <%=link("Best Deals to send from India to USA", to: "/indiatousa", class: "button button-outline")%>
   </article>
 </section>
