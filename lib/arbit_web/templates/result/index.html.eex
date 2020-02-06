@@ -1,20 +1,30 @@
+<blockquote>
+  <p><em>Real Time prices sourced at : UTC time <%= DateTime.utc_now |> DateTime.truncate(:second) %></em></p>
+</blockquote>
+
+<br>
 <table>
-  <tr>
-    <th>Coin</th>
-    <th>USA Exchange</th> 
-    <th>Price ($)</th> 
-    <th>India Exchange</th>
-    <th>Price (₹)</th>
-    <th>Difference (%)</th>
-  </tr>
-  <%= for result <- @results do %>
+  <thead>
     <tr>
-      <td><%= result.coin      %></td>
-      <td><%= result.exchange1 %></td>
-      <td><%= result.price1 |> Float.round(2)    %></td>
-      <td><%= result.exchange2 %></td>
-      <td><%= result.price2 |> Float.round(2)   %></td>
-      <td><%= result.difference%></td>
+      <th>Coin</th>
+      <th>USA Exchange</th> 
+      <th>Price ($)</th> 
+      <th>India Exchange</th>
+      <th>Price (₹)</th>
+      <th>Difference (%)</th>
     </tr>
-  <% end %>
+  </thead>
+
+  <tbody>
+    <%= for result <- @results do %>
+      <tr>
+        <td><%= result.coin      %></td>
+        <td><%= result.exchange1 %></td>
+        <td>$ <%= result.price1 |> Float.round(2)    %></td>
+        <td><%= result.exchange2 %></td>
+        <td>₹ <%= result.price2 |> Float.round(2)   %></td>
+        <td><%= result.difference%></td>
+      </tr>
+    <% end %>
+  </tbody>
 </table>
