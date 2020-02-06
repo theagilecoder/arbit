@@ -22,6 +22,10 @@ defmodule Arbit.Track do
     |> Enum.map(fn {:ok, result} -> result end)
   end
 
+  def list_results do
+    Repo.all(Result)
+  end
+
   ############
   #  Wazirx  #
   ############

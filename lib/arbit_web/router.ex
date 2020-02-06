@@ -17,6 +17,7 @@ defmodule ArbitWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/usatoindia", ResultController, :index
   end
 
   # Other scopes may use custom stacks.
