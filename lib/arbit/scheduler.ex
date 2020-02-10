@@ -15,7 +15,7 @@ defmodule Arbit.Scheduler do
 
   # Runs the job and then schedules the job
   def handle_info(:work, state) do
-    Track.upsert_conversion()
+    Track.upsert_currency()
     Track.upsert_coinbase_portfolio()
     Track.upsert_bitbns_portfolio()
     Track.upsert_wazirx_portfolio()
