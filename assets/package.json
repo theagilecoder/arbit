@@ -6,11 +6,8 @@
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
-    "bootstrap": "^4.4.1",
-    "jquery": "^3.4.1",
     "phoenix": "file:../deps/phoenix",
-    "phoenix_html": "file:../deps/phoenix_html",
-    "popper.js": "^1.16.1"
+    "phoenix_html": "file:../deps/phoenix_html"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
@@ -19,9 +16,7 @@
     "copy-webpack-plugin": "^5.1.1",
     "css-loader": "^2.1.1",
     "mini-css-extract-plugin": "^0.4.0",
-    "node-sass": "^4.13.1",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
-    "sass-loader": "^8.0.2",
     "terser-webpack-plugin": "^1.1.0",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.2"
