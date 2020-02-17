@@ -1,6 +1,5 @@
 defmodule Arbit.Track.Currency do
   use Ecto.Schema
-  import Ecto.Changeset
 
   schema "currencies" do
     field :amount, :float
@@ -9,29 +8,22 @@ defmodule Arbit.Track.Currency do
     timestamps()
   end
 
-  @doc false
-  def changeset(currency, attrs) do
-    currency
-    |> cast(attrs, [:pair, :amount])
-    |> validate_required([:pair, :amount])
-  end
-
-  @doc """
-    Returns API URL
-  """
-  def url do
-    "https://api.coinbase.com/v2/exchange-rates"
-  end
-
   @doc """
     Calls API and returns currency conversion
   """
-  def fetch_conversion do
-    %{body: body} = HTTPoison.get! url()
+  def fetch_currency() do
+    %{data: %{rates: %{INR: conversion}}} = call_api()
+    conversion |> String.to_float() |> Float.round(2)
+  end
 
-    case Jason.decode!(body, [keys: :atoms]) do
-      %{data: %{rates: %{INR: conversion}}} -> conversion |> String.to_float() |> Float.round(2)
-      _ -> 0
+  defp url() do
+    "https://api.coinbase.com/v2/exchange-rates"
+  end
+
+  defp call_api() do
+    case HTTPoison.get(url()) do
+      {:ok, %{status_code: 200, body: body}} -> Jason.decode!(body, [keys: :atoms])
+      _                                      -> nil
     end
   end
 end

@@ -12,7 +12,7 @@ defmodule Arbit.Track do
   #  Result  #
   ############
 
-  def upsert_results do
+  def upsert_results() do
     Result.compute_results("Coinbase", "Bitbns")
     |> Task.async_stream(&Repo.insert(&1, on_conflict: {:replace, [:price1, :price2, :difference, :updated_at]}, conflict_target: [:exchange1, :exchange2, :coin]))
     |> Enum.map(fn {:ok, result} -> result end)
@@ -30,7 +30,7 @@ defmodule Arbit.Track do
   #  Wazirx  #
   ############
 
-  def upsert_wazirx_portfolio do
+  def upsert_wazirx_portfolio() do
     Wazirx.fetch_portfolio()
     |> Task.async_stream(&Repo.insert(&1, on_conflict: {:replace, [:price_usd, :price_inr, :updated_at]}, conflict_target: :product))
     |> Enum.map(fn {:ok, result} -> result end)
@@ -44,7 +44,7 @@ defmodule Arbit.Track do
   #  Bitbns  #
   ############
 
-  def upsert_bitbns_portfolio do
+  def upsert_bitbns_portfolio() do
     conversion_amount = get_conversion_amount("USD-INR")
 
     # Merge price_inr in each product in the portfolio
@@ -63,7 +63,7 @@ defmodule Arbit.Track do
   #  Coinbase #
   #############
 
-  def upsert_coinbase_portfolio do
+  def upsert_coinbase_portfolio() do
     conversion_amount = get_conversion_amount("USD-INR")
 
     # Merge price_inr in each product in the portfolio
@@ -86,30 +86,15 @@ defmodule Arbit.Track do
   #     Currency     #
   ####################
 
-  def upsert_conversion do
+  def upsert_currency() do
     %Currency{}
     |> struct(%{pair: "USD-INR"})  # Merge map into Currency struct
-    |> struct(%{amount: Currency.fetch_conversion()})
+    |> struct(%{amount: Currency.fetch_currency()})
     |> Repo.insert(on_conflict: {:replace, [:amount, :updated_at]}, conflict_target: :pair)
   end
-
-  def list_currencies,          do: Repo.all(Currency)
-
-  def get_currency!(id),        do: Repo.get!(Currency, id)
-
-  def get_currency_by!(params), do: Repo.get_by!(Currency, params)
-
-  def delete_currency(%Currency{} = currency), do: Repo.delete(currency)
 
   def get_conversion_amount(pair) do
-    %{amount: amount} = get_currency_by!(%{pair: pair})
+    %{amount: amount} = Repo.get_by!(Currency, %{pair: pair})
     amount
   end
-
-  def create_currency(attrs) do
-    %Currency{}
-    |> struct(attrs)  # Merge map into Currency struct
-    |> Repo.insert(on_conflict: {:replace, [:amount, :updated_at]}, conflict_target: :pair)
-  end
-
 end
