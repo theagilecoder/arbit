@@ -86,15 +86,30 @@ defmodule Arbit.Track do
   #     Currency     #
   ####################
 
-  def upsert_currency do
+  def upsert_conversion do
     %Currency{}
     |> struct(%{pair: "USD-INR"})  # Merge map into Currency struct
-    |> struct(%{amount: Currency.fetch_currency()})
+    |> struct(%{amount: Currency.fetch_conversion()})
     |> Repo.insert(on_conflict: {:replace, [:amount, :updated_at]}, conflict_target: :pair)
   end
 
+  def list_currencies,          do: Repo.all(Currency)
+
+  def get_currency!(id),        do: Repo.get!(Currency, id)
+
+  def get_currency_by!(params), do: Repo.get_by!(Currency, params)
+
+  def delete_currency(%Currency{} = currency), do: Repo.delete(currency)
+
   def get_conversion_amount(pair) do
-    %{amount: amount} = Repo.get_by!(Currency, %{pair: pair})
+    %{amount: amount} = get_currency_by!(%{pair: pair})
     amount
   end
+
+  def create_currency(attrs) do
+    %Currency{}
+    |> struct(attrs)  # Merge map into Currency struct
+    |> Repo.insert(on_conflict: {:replace, [:amount, :updated_at]}, conflict_target: :pair)
+  end
+
 end
