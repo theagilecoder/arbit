@@ -1,13 +1,6 @@
 <section class="phx-hero">
   <h1>Find best Crypto-Currency Arbitrage deals in Real Time !</h1>
-  <p><br/>Working abroad ?<br/>Want to send money home ?<br/>Don't want to pay hefty transfer fees?</p>
-</section>
-
-<section class="row">
-  <article class="column">
-    <%=link("Best Arbitrage Deals to send from USA to India", to: "/usatoindia", class: "button")%>
-  </article>
-  <article class="column">
-    <%=link("Best Deals to send from India to USA", to: "/indiatousa", class: "button button-outline")%>
-  </article>
+  <p>Working abroad ?</p>
+  <p>Want to send money home ?</p>
+  <p>Don't want to pay hefty transfer fees?</p>
 </section>

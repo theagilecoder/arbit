@@ -1,3 +1,118 @@
 /* This file is for your main application css. */
 
-@import "./phoenix.css";
+/* @import "./phoenix.css"; */
+@import url('https://fonts.googleapis.com/css?family=Montserrat:500');
+
+/* Body */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+	font-family: "Montserrat", sans-serif;
+}
+
+/* Container */
+
+.container{
+	height: 100vh;
+	display: grid;
+	grid-template-columns: 1fr 5fr;
+	grid-template-rows: 1fr 15fr;
+	grid-template-areas: 
+		"header header"
+		"nav    main";
+}
+
+/* Header */
+
+header{
+	grid-area: header;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 5vw;
+	background-color: #24252A;
+}
+
+.logo {
+	cursor: pointer;
+	height: 1.5em;
+}
+
+button {
+	font-weight: 500;
+	font-size: 1.2em;
+	color: #edf0f1;
+	padding: 5px 15px;
+	background-color: rgba(0,136,169,1);
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: all 0.3s ease 0s;
+}
+
+button:hover {
+	background-color: rgba(0,136,169,0.8);
+}
+
+/* Nav Bar */
+
+nav{
+	grid-area: nav;
+	background-color: rgb(243, 243, 243);
+}
+
+nav a{
+	text-decoration: none;
+	color: black;
+	display: block;
+	padding: 1em 30px;
+}
+
+nav a:first-child {
+	margin-top: 1em;
+}
+
+nav a:hover {
+	background-color: rgb(219, 216, 216);
+}
+
+/* Main */
+
+main{
+	grid-area: main;
+	justify-self: center;
+	align-self: flex-start;
+}
+
+table {
+	border-collapse: collapse;
+	width: 70vw;
+	font-size: 0.9em;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+table thead tr{
+	background-color: #24252A;
+	color: white;
+	text-align: center;
+	font-weight: bold;
+}
+
+table tbody tr{
+	border-bottom: 1px solid grey;
+	text-align: center;
+}
+
+table tbody tr:hover{
+	background-color:rgb(219, 216, 216);
+}
+
+table tbody tr:last-child{
+	border-bottom: 2px solid black;
+}
+
+th, td{
+	padding: 10px 0;
+}

@@ -8,18 +8,22 @@
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
   </head>
   <body>
-    <header>
-      <section class="container">
-        <nav role="navigation">
-          <h1 style="color:#001f3f" class="phx-logo"><b>COINVANA</b></h1>
-        </nav>
-      </section>
-    </header>
-    <main role="main" class="container">
-      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
-      <%= render @view_module, @view_template, assigns %>
-    </main>
+    <div class="container">
+      <header>
+        <a href="/"><img src="images/logo.png" class="logo"></a>
+        <a href="#"><button>Register</button></a>
+      </header>
+      <nav>
+				<a href="/usatoindia">Coinbase - BitBnS</a>
+				<a href="/indiatousa">Coinbase - WazirX</a>
+				<a href="#">Coinbase - CoinDCX</a>
+			</nav>
+      <main>
+        <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+        <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+        <%= render @view_module, @view_template, assigns %>
+      </main>
+    </div>
     <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>
