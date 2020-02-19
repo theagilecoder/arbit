@@ -8,9 +8,9 @@
     <tr>
       <th>Coin</th>
       <th>USA Exchange</th> 
-      <th>Price ($)</th> 
+      <th>($) Price</th> 
       <th>India Exchange</th>
-      <th>Price (₹)</th>
+      <th>(₹) Price</th>
       <th>Difference (%)</th>
     </tr>
   </thead>
@@ -20,10 +20,10 @@
       <tr>
         <td><%= result.coin      %></td>
         <td><%= result.exchange1 %></td>
-        <td>$ <%= result.price1 |> Float.round(2)    %></td>
+        <td><%= result.price1 |> Number.Currency.number_to_currency(unit: "$ ") %></td>
         <td><%= result.exchange2 %></td>
-        <td>₹ <%= result.price2 |> Float.round(2)   %></td>
-        <td><%= result.difference%></td>
+        <td><%= result.price2 |> Number.Currency.number_to_currency(unit: "₹ ") %></td>
+        <td>% <%= result.difference%></td>
       </tr>
     <% end %>
   </tbody>
