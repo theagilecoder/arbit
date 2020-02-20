@@ -17,6 +17,12 @@
 				<a href="/usatoindia">Coinbase - BitBnS</a>
 				<a href="/indiatousa">Coinbase - WazirX</a>
 				<a href="#">Coinbase - CoinDCX</a>
+        <hr>
+				<a href="#">Gemini - BitBnS</a>
+				<a href="#">Gemini - WazirX</a>
+        <hr>
+        <a href="#">FAQ</a>
+        <hr>
 			</nav>
       <main>
         <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>

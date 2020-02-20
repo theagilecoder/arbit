@@ -78,7 +78,7 @@ nav a:hover {
 	background-color: rgb(219, 216, 216);
 }
 
-/* Main */
+/* Main - Table */
 
 main{
 	grid-area: main;
@@ -115,4 +115,16 @@ table tbody tr:last-child{
 
 th, td{
 	padding: 10px 0;
+}
+
+/* Main - Landing Page */
+
+p{
+	margin-top: 40px;
+	font-size: 2em;
+}
+
+main a img{
+	margin-top: 5em;
+	width: 60vw;
 }
