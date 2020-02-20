@@ -117,6 +117,10 @@ th, td{
 	padding: 10px 0;
 }
 
+main ul{
+	margin-top: 1em;
+}
+
 /* Main - Landing Page */
 
 p{
