@@ -1,0 +1,29 @@
+<p>Coinbase - BitBnS</p>
+<table>
+  <thead>
+    <tr>
+      <th>Coin</th>
+      <th>Coinbase Price</th> 
+      <th>BitBnS Price</th>
+      <th>Difference (%)</th>
+      <th>BitBnS Volume</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <%= for result <- @results do %>
+      <tr>
+        <td><%= result.coin      %></td>
+        <td><%= result.price1 |> Number.Currency.number_to_currency(unit: "$ ") %></td>
+        <td><%= result.price2 |> Number.Currency.number_to_currency(unit: "₹ ") %></td>
+        <td><%= result.difference |> Number.Percentage.number_to_percentage(precision: 2 )%></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<ul>
+  <li>Real Time prices sourced at : UTC time <%= DateTime.utc_now |> DateTime.truncate(:second) %></li>
+  <li>Sell coins at 1st exchange if the Arbitrage difference is -ve</li>
+  <li>Sell coins at 2nd exchange if the Arbitrage difference is +ve</li>
+</ul>

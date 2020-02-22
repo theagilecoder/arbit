@@ -19,6 +19,7 @@ defmodule ArbitWeb.Router do
     get "/", PageController, :index
     get "/usatoindia", ResultController, :index
     get "/indiatousa", ResultController, :show
+    get "/coinbasebitbns", CoinbasebitbnsController, :index
   end
 
   # Other scopes may use custom stacks.
