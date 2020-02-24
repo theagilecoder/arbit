@@ -44,14 +44,12 @@ defmodule Arbit.Track do
   #  Bitbns  #
   ############
 
+  @doc """
+  Parallely upsert each coin struct in bitbns table
+  """
   def upsert_bitbns_portfolio() do
-    conversion_amount = get_conversion_amount("USD-INR")
-
-    # Merge price_inr in each product in the portfolio
-    # & Parallely upsert each product in coinbase table
     Bitbns.fetch_portfolio()
-    |> Enum.map(fn %{price_inr: price_inr} = product -> struct!(product, %{price_usd: (price_inr / conversion_amount) |> Float.round(6)}) end)
-    |> Task.async_stream(&Repo.insert(&1, on_conflict: {:replace, [:price_usd, :price_inr, :updated_at]}, conflict_target: :product))
+    |> Task.async_stream(&Repo.insert(&1, on_conflict: {:replace, [:price_usd, :price_inr, :volume, :updated_at]}, conflict_target: [:product, :quote_currency]))
     |> Enum.map(fn {:ok, result} -> result end)
   end
 
