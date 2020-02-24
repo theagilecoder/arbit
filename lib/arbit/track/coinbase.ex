@@ -4,9 +4,10 @@ defmodule Arbit.Track.Coinbase do
   alias __MODULE__
 
   schema "coinbase" do
-    field :product, :string
-    field :price_usd, :float
-    field :price_inr, :float
+    field :coin,           :string
+    field :quote_currency, :string
+    field :price_usd,      :float
+    field :price_inr,      :float
 
     timestamps()
   end
