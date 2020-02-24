@@ -1,11 +1,10 @@
 defmodule Arbit.Track do
   @moduledoc """
-  The Track context.
+  The Track context for calling Exchange APIs and storing in DB
   """
 
   import Ecto.Query, warn: false
   alias Arbit.Repo
-
   alias Arbit.Track.{Currency, Coinbase, Bitbns, Wazirx, Result}
 
   ############
