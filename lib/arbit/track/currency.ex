@@ -1,29 +1,34 @@
 defmodule Arbit.Track.Currency do
+  @moduledoc """
+  The Currency module call API to get Fiat currency conversion
+  """
   use Ecto.Schema
+  alias __MODULE__
 
   schema "currencies" do
     field :amount, :float
-    field :pair, :string
+    field :pair,   :string
 
     timestamps()
   end
 
   @doc """
-    Calls API and returns currency conversion
+    Returns %Currency{} struct
   """
   def fetch_currency() do
-    %{data: %{rates: %{INR: conversion}}} = call_api()
-    conversion |> String.to_float() |> Float.round(2)
+    # Call api and process JSON to get conversion
+    %{body: body} = HTTPoison.get! url()
+    body = Jason.decode!(body, [keys: :atoms])
+    %{data: %{rates: %{INR: conversion}}} = body
+    conversion = conversion |> String.to_float() |> Float.round(2)
+
+    # Create %Currency{} struct
+    %Currency{}
+    |> struct(%{pair: "USD-INR"})
+    |> struct(%{amount: conversion})
   end
 
-  defp url() do
+  defp url do
     "https://api.coinbase.com/v2/exchange-rates"
-  end
-
-  defp call_api() do
-    case HTTPoison.get(url()) do
-      {:ok, %{status_code: 200, body: body}} -> Jason.decode!(body, [keys: :atoms])
-      _                                      -> nil
-    end
   end
 end

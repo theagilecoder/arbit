@@ -55,18 +55,22 @@ defmodule Arbit.Track do
 
   def list_coinbase, do: Repo.all(Coinbase)
 
-  ####################
-  #     Currency     #
-  ####################
+  #----------#
+  # Currency #
+  #----------#
 
+  @doc """
+  Upsert %Currency{} struct
+  """
   def upsert_currency() do
-    %Currency{}
-    |> struct(%{pair: "USD-INR"})  # Merge map into Currency struct
-    |> struct(%{amount: Currency.fetch_currency()})
+    Currency.fetch_currency()
     |> Repo.insert(on_conflict: {:replace, [:amount, :updated_at]}, conflict_target: :pair)
   end
 
-  def get_conversion_amount(pair) do
+  @doc """
+  Get conversion for a fiat pair
+  """
+  def get_conversion_amount(pair \\ "USD-INR") do
     %{amount: amount} = Repo.get_by!(Currency, %{pair: pair})
     amount
   end
