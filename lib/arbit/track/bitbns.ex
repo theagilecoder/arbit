@@ -1,10 +1,14 @@
 defmodule Arbit.Track.Bitbns do
+  @moduledoc """
+  This module calls Bitbns API and prepares list of %Bitbns{} structs
+  """
+
   use Ecto.Schema
   alias Arbit.Track
   alias __MODULE__
 
   schema "bitbns" do
-    field :product,        :string
+    field :coin,           :string
     field :quote_currency, :string
     field :price_usd,      :float
     field :price_inr,      :float
@@ -39,7 +43,7 @@ defmodule Arbit.Track.Bitbns do
     case value do
       %{lowest_sell_bid: lowest_sell_bid, volume: %{volume: volume}} ->
         %Bitbns{}
-        |> struct(%{product: sanitize_name(key)})
+        |> struct(%{coin: sanitize_name(key)})
         |> struct(%{quote_currency: detect_quote_currency(key)})
         |> struct(assign_price(key, lowest_sell_bid/1))
         # For coins in INR market, volume is in Rs
@@ -48,14 +52,14 @@ defmodule Arbit.Track.Bitbns do
 
       %{lowest_sell_bid: lowest_sell_bid} ->
         %Bitbns{}
-        |> struct(%{product: sanitize_name(key)})
+        |> struct(%{coin: sanitize_name(key)})
         |> struct(%{quote_currency: detect_quote_currency(key)})
         |> struct(assign_price(key, lowest_sell_bid/1))
         |> struct(%{volume: 0.0})
 
       _ ->
         %Bitbns{}
-        |> struct(%{product: sanitize_name(key)})
+        |> struct(%{coin: sanitize_name(key)})
         |> struct(%{quote_currency: detect_quote_currency(key)})
         |> struct(%{price_inr: 0.0})
         |> struct(%{price_usd: 0.0})
