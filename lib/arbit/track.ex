@@ -5,25 +5,7 @@ defmodule Arbit.Track do
 
   import Ecto.Query, warn: false
   alias Arbit.Repo
-  alias Arbit.Track.{Currency, Coinbase, Bitbns, Wazirx, Result}
-
-  ############
-  #  Result  #
-  ############
-
-  def upsert_results() do
-    Result.compute_results("Coinbase", "Bitbns")
-    |> Task.async_stream(&Repo.insert(&1, on_conflict: {:replace, [:price1, :price2, :difference, :updated_at]}, conflict_target: [:exchange1, :exchange2, :coin]))
-    |> Enum.map(fn {:ok, result} -> result end)
-
-    Result.compute_results("Coinbase", "Wazirx")
-    |> Task.async_stream(&Repo.insert(&1, on_conflict: {:replace, [:price1, :price2, :difference, :updated_at]}, conflict_target: [:exchange1, :exchange2, :coin]))
-    |> Enum.map(fn {:ok, result} -> result end)
-  end
-
-  def list_results do
-    Repo.all(Result)
-  end
+  alias Arbit.Track.{Currency, Coinbase, Bitbns, Wazirx}
 
   ############
   #  Wazirx  #

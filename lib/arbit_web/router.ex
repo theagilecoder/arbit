@@ -16,9 +16,6 @@ defmodule ArbitWeb.Router do
   scope "/", ArbitWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
-    get "/usatoindia", ResultController, :index
-    get "/indiatousa", ResultController, :show
     get "/coinbasebitbns", CoinbasebitbnsController, :index
   end
 
