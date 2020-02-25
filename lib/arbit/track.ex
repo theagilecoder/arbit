@@ -7,52 +7,59 @@ defmodule Arbit.Track do
   alias Arbit.Repo
   alias Arbit.Track.{Currency, Coinbase, Bitbns, Wazirx}
 
-  ############
-  #  Wazirx  #
-  ############
+  #--------#
+  # Wazirx #
+  #--------#
 
+  @doc """
+  Parallely upsert each %Wazirx{} struct in Wazirx table
+  """
   def upsert_wazirx_portfolio() do
     Wazirx.fetch_portfolio()
-    |> Task.async_stream(&Repo.insert(&1, on_conflict: {:replace, [:price_usd, :price_inr, :updated_at]}, conflict_target: :product))
+    |> Task.async_stream(&Repo.insert(&1,
+        on_conflict: {:replace, [:price_usd, :price_inr, :updated_at]},
+        conflict_target: :product))
     |> Enum.map(fn {:ok, result} -> result end)
   end
 
-  def get_wazirx_product(product) do
-    Repo.get_by(Wazirx, %{product: product})
-  end
-
-  ############
-  #  Bitbns  #
-  ############
+  #--------#
+  # Bitbns #
+  #--------#
 
   @doc """
-  Parallely upsert each coin struct in bitbns table
+  Parallely upsert each %Bitbns{} struct in Bitbns table
   """
   def upsert_bitbns_portfolio() do
     Bitbns.fetch_portfolio()
-    |> Task.async_stream(&Repo.insert(&1, on_conflict: {:replace, [:price_usd, :price_inr, :volume, :updated_at]}, conflict_target: [:coin, :quote_currency]))
+    |> Task.async_stream(&Repo.insert(&1,
+        on_conflict: {:replace, [:price_usd, :price_inr, :volume, :updated_at]},
+        conflict_target: [:coin, :quote_currency]))
     |> Enum.map(fn {:ok, result} -> result end)
   end
 
+  @doc """
+  Get all entries from Bitbns table
+  """
   def list_bitbns, do: Repo.all(Bitbns)
 
-  def get_bitbns_product(product) do
-    Repo.get_by(Bitbns, %{product: product})
-  end
-
-  #############
-  #  Coinbase #
-  #############
+  #----------#
+  # Coinbase #
+  #----------#
 
   @doc """
-  Parallely upsert each coin struct in coinbase table
+  Parallely upsert each %Coinbase{} struct in Coinbase table
   """
   def upsert_coinbase_portfolio() do
     Coinbase.fetch_portfolio()
-    |> Task.async_stream(&Repo.insert(&1, on_conflict: {:replace, [:price_usd, :price_inr, :updated_at]}, conflict_target: [:coin, :quote_currency]))
+    |> Task.async_stream(&Repo.insert(&1,
+        on_conflict: {:replace, [:price_usd, :price_inr, :updated_at]},
+        conflict_target: [:coin, :quote_currency]))
     |> Enum.map(fn {:ok, result} -> result end)
   end
 
+  @doc """
+  Get all entries from Coinbase table
+  """
   def list_coinbase, do: Repo.all(Coinbase)
 
   #----------#
