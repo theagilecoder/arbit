@@ -52,6 +52,8 @@ defmodule Arbit.Track do
     |> Enum.map(fn {:ok, result} -> result end)
   end
 
+  def list_bitbns, do: Repo.all(Bitbns)
+
   def get_bitbns_product(product) do
     Repo.get_by(Bitbns, %{product: product})
   end
