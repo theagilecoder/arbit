@@ -1,6 +1,6 @@
 defmodule Arbit.Display do
   @moduledoc """
-  The Display context for calculating results and storing in DB
+  The Display context for storing results in DB
   so that it can be displayed on the results pages
   """
 
@@ -18,4 +18,9 @@ defmodule Arbit.Display do
         conflict_target: [:coin, :quote_currency]))
     |> Enum.map(fn {:ok, result} -> result end)
   end
+
+  @doc """
+    Display results
+  """
+  def list_coinbasebitbns, do: Repo.all(Coinbasebitbns)
 end
