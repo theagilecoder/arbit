@@ -1,56 +1,70 @@
 defmodule Arbit.Track.Wazirx do
+  @moduledoc """
+  This module calls Wazirx API and prepares list of %Wazirx{} structs
+  in 3 quote currencies - INR, USDT and BTC
+  Volume is in whatever the quote unit is
+  """
+
   use Ecto.Schema
+  alias Arbit.Track
   alias __MODULE__
 
   schema "wazirx" do
-    field :product, :string
-    field :price_usd, :float
-    field :price_inr, :float
+    field :coin,           :string
+    field :quote_currency, :string
+    field :price_usd,      :float
+    field :price_inr,      :float
+    field :price_btc,      :float
+    field :volume,         :float
 
     timestamps()
   end
 
   @doc """
-    Returns API URL of Wazirx
+    Returns list of %Wazirx{} structs with all fields filled
   """
-  def url do
-    "https://api.wazirx.com/api/v2/tickers"
+  def fetch_portfolio do
+    conversion_amount = Track.get_conversion_amount("USD-INR")
+
+    product_list()
+    |> Enum.map(&create_wazirx_struct/1)
+    |> Enum.map(&fill_blank_price_inr(&1, conversion_amount))
+    |> Enum.map(&fill_blank_price_usd(&1, conversion_amount))
   end
 
-  @doc """
-    Returns Wazirx's list of products
-  """
-  def product_list do
+  # Parses API response
+  defp product_list do
     %{body: body} = HTTPoison.get! url()
     Jason.decode!(body, [keys: :atoms])
     # |> Map.keys() |> Enum.sort() |> IO.inspect(limit: :infinity, width: 0)
   end
 
-  @doc """
-    For each product in the list, create a struct
-    and return a list of such structs
-  """
-  def fetch_portfolio do
-    product_list()
-    |> Enum.map(&create_wazirx_struct/1)
+  defp url do
+    "https://api.wazirx.com/api/v2/tickers"
   end
 
-  # Given a map, Create struct
-  defp create_wazirx_struct({key, %{buy: price_inr}}) do
+  # Given a map, Create a %Wazirx{} struct
+  defp create_wazirx_struct({_key, value}) do
     %Wazirx{}
-    |> struct(%{product: sanitize_name(key)})
-    |> struct(%{price_inr: String.to_float(price_inr)})
+    |> struct(%{coin:           value.base_unit |> String.upcase()})
+    |> struct(%{quote_currency: value.quote_unit |> String.upcase()})
+    |> struct(%{volume:         value.volume |> String.to_float()})
+    |> struct(%{price_inr: (if value.quote_unit == "inr",  do: value.buy |> String.to_float(), else: nil)})
+    |> struct(%{price_btc: (if value.quote_unit == "btc",  do: value.buy |> String.to_float(), else: nil)})
+    |> struct(%{price_usd: (if value.quote_unit == "usdt", do: value.buy |> String.to_float(), else: nil)})
   end
 
-  # Receives :btcinr, returns "BTC-INR"
-  defp sanitize_name(product) do
-    product = product |> to_string() |> String.upcase()
-
+  defp fill_blank_price_inr(%Wazirx{price_usd: price_usd} = coin, conversion_amount) do
     cond do
-      String.ends_with?(product, "INR")  -> String.replace_suffix(product, "INR", "-INR")
-      String.ends_with?(product, "BTC")  -> String.replace_suffix(product, "BTC", "-BTC")
-      String.ends_with?(product, "USDT") -> String.replace_suffix(product, "USDT", "-USDT")
-      true                               -> "NULL"
+      price_usd != nil -> struct(coin, %{price_inr: price_usd * conversion_amount})
+      true             -> coin
+    end
+  end
+
+  defp fill_blank_price_usd(%Wazirx{price_inr: price_inr} = coin, conversion_amount) do
+    cond do
+      price_inr != nil -> struct(coin, %{price_usd: price_inr / conversion_amount})
+      true             -> coin
     end
   end
 end

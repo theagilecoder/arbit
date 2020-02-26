@@ -19,6 +19,7 @@ defmodule Arbit.Scheduler do
     Track.upsert_currency()
     Track.upsert_coinbase_portfolio()
     Track.upsert_bitbns_portfolio()
+    Track.upsert_wazirx_portfolio()
     # Display context
     Display.upsert_coinbasebitbns()
     schedule_work()

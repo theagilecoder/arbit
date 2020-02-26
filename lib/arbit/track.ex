@@ -17,10 +17,15 @@ defmodule Arbit.Track do
   def upsert_wazirx_portfolio() do
     Wazirx.fetch_portfolio()
     |> Task.async_stream(&Repo.insert(&1,
-        on_conflict: {:replace, [:price_usd, :price_inr, :updated_at]},
-        conflict_target: :product))
+        on_conflict: {:replace, [:price_usd, :price_inr, :price_btc, :volume, :updated_at]},
+        conflict_target: [:coin, :quote_currency]))
     |> Enum.map(fn {:ok, result} -> result end)
   end
+
+  @doc """
+  Get all entries from Bitbns table
+  """
+  def list_wazirx, do: Repo.all(Wazirx)
 
   #--------#
   # Bitbns #
