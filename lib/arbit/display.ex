@@ -1,12 +1,17 @@
 defmodule Arbit.Display do
   @moduledoc """
-  The Display context for storing results in DB
+  The Display context is responsible for
+  storing arbitrage results in DB
   so that it can be displayed on the results pages
   """
 
   import Ecto.Query, warn: false
   alias Arbit.Repo
-  alias Arbit.Display.{Coinbasebitbns}
+  alias Arbit.Display.{Coinbasebitbns, Coinbasewazirx}
+
+  #--------#
+  # Bitbns #
+  #--------#
 
   @doc """
   Upserts results in coinbasebitbns table
@@ -20,7 +25,27 @@ defmodule Arbit.Display do
   end
 
   @doc """
-    Display results
+    Display all results
   """
   def list_coinbasebitbns, do: Repo.all(Coinbasebitbns)
+
+  #--------#
+  # WazirX #
+  #--------#
+
+  @doc """
+  Upserts results in coinbasewazirx table
+  """
+  def upsert_coinbasewazirx do
+    Coinbasewazirx.compute_arbitrage()
+    |> Task.async_stream(&Repo.insert(&1,
+        on_conflict: {:replace, [:coinbase_price, :wazirx_price, :wazirx_volume, :difference, :updated_at]},
+        conflict_target: [:coin, :quote_currency]))
+    |> Enum.map(fn {:ok, result} -> result end)
+  end
+
+  @doc """
+    Display all results
+  """
+  def list_coinbasewazirx, do: Repo.all(Coinbasewazirx)
 end

@@ -1,87 +1,87 @@
-defmodule Arbit.Display.Coinbasebitbns do
+defmodule Arbit.Display.Coinbasewazirx do
   @moduledoc """
     Coinbasewazirx module is responsible for
     defining the model schema and
-    computing arbitrage between Coinbase & BitBnS
+    computing arbitrage between Coinbase & WazirX
   """
 
   use Ecto.Schema
   alias Arbit.Track
   alias __MODULE__
 
-  schema "coinbasebitbns" do
+  schema "coinbasewazirx" do
     field :coin,           :string
     field :quote_currency, :string
     field :coinbase_price, :float
-    field :bitbns_price,   :float
+    field :wazirx_price,   :float
     field :difference,     :float
-    field :bitbns_volume,  :float
+    field :wazirx_volume,  :float
 
     timestamps()
   end
 
   @doc """
-  Compute arbitrage between Coinbase & Bitbns
-  & return a list of %Coinbasebitbns{} structs
+  Compute arbitrage between Coinbase & WazirX
+  & return a list of %Coinbasewazirx{} structs
   """
   def compute_arbitrage do
     compute_arbitrage_inr_market() ++ compute_arbitrage_usdt_market()
   end
 
   @doc """
-  Compute arbitrage between Coinbase USD coins & Bitbns INR coins
-  and return a list of %Coinbasebitbns{} structs
+  Compute arbitrage between Coinbase USD coins & WazirX INR coins
+  and return a list of %Coinbasewazirx{} structs
   """
   def compute_arbitrage_inr_market() do
-    # Get Coinbase & Bitbns portfolios
+    # Get Coinbase & Wazirx portfolios
     coinbase_portfolio = Track.list_coinbase()
-    bitbns_portfolio   = Track.list_bitbns()
+    wazirx_portfolio   = Track.list_wazirx()
 
     # Filter in the coins belonging to the relevant market
     coinbase_portfolio = filter_market(coinbase_portfolio, "USD")
-    bitbns_portfolio   = filter_market(bitbns_portfolio,   "INR")
+    wazirx_portfolio   = filter_market(wazirx_portfolio,   "INR")
 
     # Filter in common coins in the two portfolios
-    coinbase_portfolio = filter_common_coins(coinbase_portfolio, bitbns_portfolio)
-    bitbns_portfolio   = filter_common_coins(bitbns_portfolio, coinbase_portfolio)
+    coinbase_portfolio = filter_common_coins(coinbase_portfolio, wazirx_portfolio)
+    wazirx_portfolio   = filter_common_coins(wazirx_portfolio, coinbase_portfolio)
 
     # Sort each portfolio by coin name
     coinbase_portfolio = Enum.sort_by(coinbase_portfolio, &(&1.coin))
-    bitbns_portfolio   = Enum.sort_by(bitbns_portfolio,   &(&1.coin))
+    wazirx_portfolio   = Enum.sort_by(wazirx_portfolio,   &(&1.coin))
 
     # Zip the two portfolios
-    zipped_portfolios = Enum.zip(coinbase_portfolio, bitbns_portfolio)
+    zipped_portfolios = Enum.zip(coinbase_portfolio, wazirx_portfolio)
 
-    # Create %Coinbasebitbns{} struct with difference %
-    Enum.map(zipped_portfolios, & create_coinbasebitbns_struct(&1))
+    # Create %Coinbasewazirx{} struct with difference %
+    Enum.map(zipped_portfolios, & create_coinbasewazirx_struct(&1))
   end
 
   @doc """
-  Compute arbitrage between Coinbase USD coins & Bitbns USDT coins
-  and return a list of %Coinbasebitbns{} structs
+  Compute arbitrage between Coinbase USD coins & WazirX USDT coins
+  and return a list of %Coinbasewazirx{} structs
   """
   def compute_arbitrage_usdt_market() do
-    # Get Coinbase & Bitbns portfolios
+    # Get Coinbase & WazirX portfolios
     coinbase_portfolio = Track.list_coinbase()
-    bitbns_portfolio   = Track.list_bitbns()
+    wazirx_portfolio   = Track.list_wazirx()
 
     # Filter in the coins belonging to the relevant market
     coinbase_portfolio = filter_market(coinbase_portfolio, "USD")
-    bitbns_portfolio   = filter_market(bitbns_portfolio,  "USDT")
+    wazirx_portfolio   = filter_market(wazirx_portfolio,  "USDT")
 
     # Filter in common coins in the two portfolios
-    coinbase_portfolio = filter_common_coins(coinbase_portfolio, bitbns_portfolio)
-    bitbns_portfolio   = filter_common_coins(bitbns_portfolio, coinbase_portfolio)
+    coinbase_portfolio = filter_common_coins(coinbase_portfolio, wazirx_portfolio)
+    wazirx_portfolio   = filter_common_coins(wazirx_portfolio, coinbase_portfolio)
 
     # Sort each portfolio by coin name
     coinbase_portfolio = Enum.sort_by(coinbase_portfolio, &(&1.coin))
-    bitbns_portfolio   = Enum.sort_by(bitbns_portfolio,   &(&1.coin))
+    wazirx_portfolio   = Enum.sort_by(wazirx_portfolio,   &(&1.coin))
 
     # Zip the two portfolios
-    zipped_portfolios = Enum.zip(coinbase_portfolio, bitbns_portfolio)
+    zipped_portfolios = Enum.zip(coinbase_portfolio, wazirx_portfolio)
 
-    # Create %Coinbasebitbns{} struct with difference %
-    Enum.map(zipped_portfolios, & create_coinbasebitbns_struct(&1))
+    # Create %Coinbasewazirx{} struct with difference %
+    Enum.map(zipped_portfolios, & create_coinbasewazirx_struct(&1))
   end
 
   #-------------------#
@@ -101,15 +101,15 @@ defmodule Arbit.Display.Coinbasebitbns do
     Enum.any?(portfolio, fn %{coin: coin_in_struct} -> coin == coin_in_struct end)
   end
 
-  # Create %Coinbasebitbns{} struct and fills them
-  defp create_coinbasebitbns_struct({coinbase_portfolio, bitbns_portfolio}) do
-    %Coinbasebitbns{}
+  # Create %Coinbasewazirx{} struct and fills them
+  defp create_coinbasewazirx_struct({coinbase_portfolio, wazirx_portfolio}) do
+    %Coinbasewazirx{}
     |> struct(%{coin:           coinbase_portfolio.coin})
-    |> struct(%{quote_currency: bitbns_portfolio.quote_currency})
+    |> struct(%{quote_currency: wazirx_portfolio.quote_currency})
     |> struct(%{coinbase_price: coinbase_portfolio.price_usd})
-    |> struct(%{bitbns_price:   bitbns_portfolio.price_inr})
-    |> struct(%{bitbns_volume:  bitbns_portfolio.volume})
-    |> struct(%{difference:     compute_difference(coinbase_portfolio.price_inr, bitbns_portfolio.price_inr)})
+    |> struct(%{wazirx_price:   wazirx_portfolio.price_inr})
+    |> struct(%{wazirx_volume:  wazirx_portfolio.volume})
+    |> struct(%{difference:     compute_difference(coinbase_portfolio.price_inr, wazirx_portfolio.price_inr)})
   end
 
   # Compute difference %

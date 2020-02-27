@@ -1,1 +1,64 @@
-<h1>Coinbase - Wazirx</h1>
+<h1>Coinbase - WazirX</h1>
+
+<!-- INR market table -->
+
+<h3>INR Market @ WazirX</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Coin</th>
+      <th>Quote</th>
+      <th>Coinbase Price</th> 
+      <th>WazirX Price</th>
+      <th>Difference</th>
+      <th>WazirX Volume</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <%= for result <- filter_inr_quotes(@results) do %>
+      <tr>
+        <td><%= result.coin %></td>
+        <td><%= result.quote_currency %></td>
+        <td><%= result.coinbase_price |> format_dollar() %></td>
+        <td><%= result.wazirx_price |> format_rupee() %></td>
+        <td><%= result.difference |> format_percentage %></td>
+        <td><%= result.wazirx_volume |> format_rupee() %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<!-- USDT market table -->
+
+<h3>USDT Market @ WazirX</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Coin</th>
+      <th>Quote</th>
+      <th>Coinbase Price</th> 
+      <th>WazirX Price</th>
+      <th>Difference</th>
+      <th>WazirX Volume</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <%= for result <- filter_usdt_quotes(@results) do %>
+      <tr>
+        <td><%= result.coin %></td>
+        <td><%= result.quote_currency %></td>
+        <td><%= result.coinbase_price |> format_dollar %></td>
+        <td><%= result.wazirx_price |> format_rupee %></td>
+        <td><%= result.difference |> format_percentage %></td>
+        <td><%= result.wazirx_volume |> format_dollar %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<ul>
+  <li>* Last updated at IST Time <%= ist_time(@results) %></li>
+  <li>* Percentages are calculated over the 1st exchange</li>
+</ul>
