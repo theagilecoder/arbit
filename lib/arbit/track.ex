@@ -23,7 +23,7 @@ defmodule Arbit.Track do
   end
 
   @doc """
-  Get all entries from Bitbns table
+  Get all entries from Wazirx table
   """
   def list_wazirx, do: Repo.all(Wazirx)
 
