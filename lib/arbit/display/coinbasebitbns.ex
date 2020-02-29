@@ -1,6 +1,6 @@
 defmodule Arbit.Display.Coinbasebitbns do
   @moduledoc """
-    Coinbasewazirx module is responsible for
+    This module is responsible for
     defining the model schema and
     computing arbitrage between Coinbase & BitBnS
   """

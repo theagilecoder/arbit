@@ -7,7 +7,7 @@ defmodule Arbit.Display do
 
   import Ecto.Query, warn: false
   alias Arbit.Repo
-  alias Arbit.Display.{Coinbasebitbns, Coinbasewazirx}
+  alias Arbit.Display.{Coinbasebitbns, Coinbasewazirx, Coinbasecoindcx}
 
   #--------#
   # Bitbns #
@@ -48,4 +48,24 @@ defmodule Arbit.Display do
     Display all results
   """
   def list_coinbasewazirx, do: Repo.all(Coinbasewazirx)
+
+  #---------#
+  # CoinDCX #
+  #---------#
+
+  @doc """
+  Upserts results in coinbasecoindcx table
+  """
+  def upsert_coinbasecoindcx do
+    Coinbasecoindcx.compute_arbitrage()
+    |> Task.async_stream(&Repo.insert(&1,
+        on_conflict: {:replace, [:coinbase_price, :coindcx_price, :coindcx_volume, :difference, :updated_at]},
+        conflict_target: [:coin, :quote_currency]))
+    |> Enum.map(fn {:ok, result} -> result end)
+  end
+
+  @doc """
+    Display all results
+  """
+  def list_coinbasecoindcx, do: Repo.all(Coinbasecoindcx)
 end
