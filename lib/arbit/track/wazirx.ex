@@ -48,10 +48,10 @@ defmodule Arbit.Track.Wazirx do
     %Wazirx{}
     |> struct(%{coin:           value.base_unit |> String.upcase()})
     |> struct(%{quote_currency: value.quote_unit |> String.upcase()})
-    |> struct(%{volume:         value.volume |> String.to_float()})
-    |> struct(%{price_inr: (if value.quote_unit == "inr",  do: value.buy |> String.to_float(), else: nil)})
-    |> struct(%{price_btc: (if value.quote_unit == "btc",  do: value.buy |> String.to_float(), else: nil)})
-    |> struct(%{price_usd: (if value.quote_unit == "usdt", do: value.buy |> String.to_float(), else: nil)})
+    |> struct(%{volume:         value.volume |> Float.parse() |> elem(0)})
+    |> struct(%{price_inr: (if value.quote_unit == "inr",  do: value.buy |> Float.parse() |> elem(0), else: nil)})
+    |> struct(%{price_btc: (if value.quote_unit == "btc",  do: value.buy |> Float.parse() |> elem(0), else: nil)})
+    |> struct(%{price_usd: (if value.quote_unit == "usdt", do: value.buy |> Float.parse() |> elem(0), else: nil)})
   end
 
   defp fill_blank_price_inr(%Wazirx{price_usd: price_usd} = coin, conversion_amount) do

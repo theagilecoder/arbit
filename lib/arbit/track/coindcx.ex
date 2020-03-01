@@ -88,11 +88,11 @@ defmodule Arbit.Track.Coindcx do
 
   defp assign_price(market, bid) do
     cond do
-      String.ends_with?(market, "INR")  -> %{price_inr: bid |> String.to_float()}
-      String.ends_with?(market, "BTC")  -> %{price_btc: bid |> String.to_float()}
-      String.ends_with?(market, "USDT") -> %{price_usd: bid |> String.to_float()}
-      String.ends_with?(market, "TUSD") -> %{price_usd: bid |> String.to_float()}
-      String.ends_with?(market, "USDC") -> %{price_usd: bid |> String.to_float()}
+      String.ends_with?(market, "INR")  -> %{price_inr: bid |> Float.parse() |> elem(0)}
+      String.ends_with?(market, "BTC")  -> %{price_btc: bid |> Float.parse() |> elem(0)}
+      String.ends_with?(market, "USDT") -> %{price_usd: bid |> Float.parse() |> elem(0)}
+      String.ends_with?(market, "TUSD") -> %{price_usd: bid |> Float.parse() |> elem(0)}
+      String.ends_with?(market, "USDC") -> %{price_usd: bid |> Float.parse() |> elem(0)}
       true                              -> %{price_inr: nil}
     end
   end
