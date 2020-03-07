@@ -1,0 +1,15 @@
+<h1>FAQ</h1>
+<h4>Q. What is the current USD - INR conversion rate on which arbitrage calculations are based ?</h4>
+<h4>A. 1 USD = <%=@conversion%> INR</h4>
+<br />
+<h4>Q. Do I need to have bank accounts in both countries to do cross country Arbitrage ?</h4>
+<h4>A. Yes, in order to register in an exchange in a country, you need to have a bank account in that country.</h4>
+<br />
+<h4>Q. What is a Quote currency ?</h4>
+<h4>A. Quote currency is the currency in which a given Crypto is valued against in an exchange.</h4>
+<br />
+<h4>Q. What is my alternative to using this site ?</h4>
+<h4>A. Painstakingly creating an excel sheet covering your preferred exchanges and updating it every few minutes manually.</h4>
+<br />
+<h4>Q. How do I decide where to buy and where to sell to book a profit ?</h4>
+<h4>A. Based on Arbitrage % sign (+ve or -ve)</h4>

@@ -17,6 +17,7 @@ defmodule ArbitWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/faq", PageController, :show
     get "/coinbasebitbns", CoinbasebitbnsController, :index
     get "/coinbasewazirx", CoinbasewazirxController, :index
     get "/coinbasecoindcx", CoinbasecoindcxController, :index
