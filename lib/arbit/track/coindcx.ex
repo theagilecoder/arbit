@@ -54,7 +54,7 @@ defmodule Arbit.Track.Coindcx do
     %Coindcx{}
     |> struct!(%{coin: sanitize_name(coin_map.market)})
     |> struct!(%{quote_currency: detect_quote_currency(coin_map.market)})
-    |> struct!(%{volume: coin_map.volume |> String.to_float()})
+    |> struct!(%{volume: coin_map.volume |> Float.parse() |> elem(0)})
     |> struct!(assign_price(coin_map.market, coin_map.bid))
   end
 
