@@ -1,6 +1,6 @@
 defmodule Arbit.Track.Coindcx do
   @moduledoc """
-  This module calls Bitbns API and prepares list of %Coindcx{} structs
+  This module calls CoinDCX API and prepares list of %Coindcx{} structs
   """
 
   use Ecto.Schema

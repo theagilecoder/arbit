@@ -37,6 +37,10 @@ defmodule ArbitWeb.CoinbasewazirxView do
     Number.Currency.number_to_currency(number, unit: "$ ")
   end
 
+  def format_coin_units(number) do
+    Number.Currency.number_to_currency(number, unit: "c.", format: "%n %u")
+  end
+
   def format_percentage(number) do
     Number.Percentage.number_to_percentage(number, precision: 2 )
   end

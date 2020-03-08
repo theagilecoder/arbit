@@ -46,9 +46,7 @@ defmodule Arbit.Track.Bitbns do
         |> struct(%{coin: sanitize_name(key)})
         |> struct(%{quote_currency: detect_quote_currency(key)})
         |> struct(assign_price(key, lowest_sell_bid/1))
-        # For coins in INR market, volume is in Rs
-        # For coins in USDT market, volume is in USDT
-        |> struct(%{volume: lowest_sell_bid/1 * volume/1 |> Float.round(2)})
+        |> struct(%{volume: volume/1})
 
       %{lowest_sell_bid: lowest_sell_bid} ->
         %Bitbns{}

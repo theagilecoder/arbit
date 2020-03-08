@@ -23,7 +23,7 @@
         <td><%= result.coinbase_price |> format_dollar() %></td>
         <td><%= result.bitbns_price |> format_rupee() %></td>
         <td><%= result.difference |> format_percentage %></td>
-        <td><%= result.bitbns_volume |> format_rupee() %></td>
+        <td><%= result.bitbns_volume |> format_coin_units() %></td>
       </tr>
     <% end %>
   </tbody>
@@ -52,7 +52,7 @@
         <td><%= result.coinbase_price |> format_dollar %></td>
         <td><%= result.bitbns_price |> format_rupee %></td>
         <td><%= result.difference |> format_percentage %></td>
-        <td><%= result.bitbns_volume |> format_dollar %></td>
+        <td><%= result.bitbns_volume |> format_coin_units %></td>
       </tr>
     <% end %>
   </tbody>
