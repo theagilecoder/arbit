@@ -14,6 +14,7 @@ defmodule Arbit.Track.Coinbase do
     field :quote_currency, :string
     field :price_usd,      :float
     field :price_inr,      :float
+    field :price_btc,      :float
 
     timestamps()
   end

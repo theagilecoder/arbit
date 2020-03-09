@@ -7,6 +7,7 @@ defmodule Arbit.Repo.Migrations.CreateCoinbase do
       add :quote_currency, :string
       add :price_usd,      :float
       add :price_inr,      :float
+      add :price_btc,      :float
 
       timestamps()
     end
