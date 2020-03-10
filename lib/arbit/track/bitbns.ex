@@ -41,18 +41,18 @@ defmodule Arbit.Track.Bitbns do
 
   defp create_bitbns_struct({key, value}) do
     case value do
-      %{lowest_sell_bid: lowest_sell_bid, volume: %{volume: volume}} ->
+      %{highest_buy_bid: highest_buy_bid, volume: %{volume: volume}} ->
         %Bitbns{}
         |> struct(%{coin: sanitize_name(key)})
         |> struct(%{quote_currency: detect_quote_currency(key)})
-        |> struct(assign_price(key, lowest_sell_bid/1))
+        |> struct(assign_price(key, highest_buy_bid/1))
         |> struct(%{volume: volume/1})
 
-      %{lowest_sell_bid: lowest_sell_bid} ->
+      %{highest_buy_bid: highest_buy_bid} ->
         %Bitbns{}
         |> struct(%{coin: sanitize_name(key)})
         |> struct(%{quote_currency: detect_quote_currency(key)})
-        |> struct(assign_price(key, lowest_sell_bid/1))
+        |> struct(assign_price(key, highest_buy_bid/1))
         |> struct(%{volume: 0.0})
 
       _ ->
