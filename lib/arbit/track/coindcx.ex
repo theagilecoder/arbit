@@ -49,7 +49,7 @@ defmodule Arbit.Track.Coindcx do
     |> Enum.reject(fn x -> String.contains?(x.bid, "e") end)
   end
 
-  # Convert a mp to a %Coindcx{} struct
+  # Convert a map to a %Coindcx{} struct
   defp create_coindcx_struct(coin_map) do
     %Coindcx{}
     |> struct!(%{coin: sanitize_name(coin_map.market)})
