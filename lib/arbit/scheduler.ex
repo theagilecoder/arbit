@@ -31,6 +31,6 @@ defmodule Arbit.Scheduler do
 
   # Defines how many ms to wait
   defp schedule_work() do
-    Process.send_after(self(), :work, 300 * 1000)    # 5 mins
+    Process.send_after(self(), :work, 150 * 1000)    # 2.5 mins
   end
 end
