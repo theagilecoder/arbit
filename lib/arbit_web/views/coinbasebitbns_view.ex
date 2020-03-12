@@ -2,21 +2,39 @@ defmodule ArbitWeb.CoinbasebitbnsView do
   use ArbitWeb, :view
 
   @doc """
-  Filters INR quoted coins from all results and sorts in descending order of difference
+  Filters INR quoted coins from all results and sorts in descending order of bid_difference
   """
-  def filter_inr_quotes(results) do
+  def filter_inr_quotes_and_sort_by_bid_difference(results) do
     results
     |> Enum.filter(fn %{quote_currency: quote_currency} -> quote_currency == "INR" end)
-    |> Enum.sort_by(fn x -> x.difference end, &>=/2)
+    |> Enum.sort_by(fn x -> x.bid_difference end, &>=/2)
   end
 
   @doc """
-  Filters USDT quoted coins from all results and sorts in descending order of difference
+  Filters USDT quoted coins from all results and sorts in descending order of bid_difference
   """
-  def filter_usdt_quotes(results) do
+  def filter_usdt_quotes_and_sort_by_bid_difference(results) do
     results
     |> Enum.filter(fn %{quote_currency: quote_currency} -> quote_currency == "USDT" end)
-    |> Enum.sort_by(fn x -> x.difference end, &>=/2)
+    |> Enum.sort_by(fn x -> x.bid_difference end, &>=/2)
+  end
+
+  @doc """
+  Filters INR quoted coins from all results and sorts in descending order of ask_difference
+  """
+  def filter_inr_quotes_and_sort_by_ask_difference(results) do
+    results
+    |> Enum.filter(fn %{quote_currency: quote_currency} -> quote_currency == "INR" end)
+    |> Enum.sort_by(fn x -> x.ask_difference end, &>=/2)
+  end
+
+  @doc """
+  Filters USDT quoted coins from all results and sorts in descending order of ask_difference
+  """
+  def filter_usdt_quotes_and_sort_by_ask_difference(results) do
+    results
+    |> Enum.filter(fn %{quote_currency: quote_currency} -> quote_currency == "USDT" end)
+    |> Enum.sort_by(fn x -> x.ask_difference end, &>=/2)
   end
 
   @doc """

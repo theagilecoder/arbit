@@ -10,8 +10,10 @@ defmodule Arbit.Track.Bitbns do
   schema "bitbns" do
     field :coin,           :string
     field :quote_currency, :string
-    field :price_usd,      :float
-    field :price_inr,      :float
+    field :bid_price_usd,  :float
+    field :bid_price_inr,  :float
+    field :ask_price_usd,  :float
+    field :ask_price_inr,  :float
     field :volume,         :float
 
     timestamps()
@@ -25,8 +27,10 @@ defmodule Arbit.Track.Bitbns do
 
     product_list()
     |> Enum.map(&create_bitbns_struct/1)
-    |> Enum.map(&fill_blank_price_usd(&1, conversion_amount))
-    |> Enum.map(&fill_blank_price_inr(&1, conversion_amount))
+    |> Enum.map(&fill_blank_bid_price_usd(&1, conversion_amount))
+    |> Enum.map(&fill_blank_bid_price_inr(&1, conversion_amount))
+    |> Enum.map(&fill_blank_ask_price_usd(&1, conversion_amount))
+    |> Enum.map(&fill_blank_ask_price_inr(&1, conversion_amount))
   end
 
   defp product_list do
@@ -41,26 +45,28 @@ defmodule Arbit.Track.Bitbns do
 
   defp create_bitbns_struct({key, value}) do
     case value do
-      %{highest_buy_bid: highest_buy_bid, volume: %{volume: volume}} ->
+      %{highest_buy_bid: bid, lowest_sell_bid: ask, volume: %{volume: volume}} ->
         %Bitbns{}
         |> struct(%{coin: sanitize_name(key)})
         |> struct(%{quote_currency: detect_quote_currency(key)})
-        |> struct(assign_price(key, highest_buy_bid/1))
+        |> struct(assign_bid_price(key, bid/1))
+        |> struct(assign_ask_price(key, ask/1))
         |> struct(%{volume: volume/1})
 
-      %{highest_buy_bid: highest_buy_bid} ->
+      %{highest_buy_bid: bid, lowest_sell_bid: ask} ->
         %Bitbns{}
         |> struct(%{coin: sanitize_name(key)})
         |> struct(%{quote_currency: detect_quote_currency(key)})
-        |> struct(assign_price(key, highest_buy_bid/1))
+        |> struct(assign_bid_price(key, bid/1))
+        |> struct(assign_ask_price(key, ask/1))
         |> struct(%{volume: 0.0})
 
       _ ->
         %Bitbns{}
         |> struct(%{coin: sanitize_name(key)})
         |> struct(%{quote_currency: detect_quote_currency(key)})
-        |> struct(%{price_inr: 0.0})
-        |> struct(%{price_usd: 0.0})
+        |> struct(%{bid_price_inr: 0.0})
+        |> struct(%{bid_price_usd: 0.0})
         |> struct(%{volume: 0.0})
     end
   end
@@ -83,25 +89,47 @@ defmodule Arbit.Track.Bitbns do
     end
   end
 
-  defp assign_price(key, price) do
+  defp assign_bid_price(key, price) do
     key = to_string(key)
     cond do
-      String.contains?(key, "USDT") -> %{price_usd: price |> Float.round(6)}
-      true                          -> %{price_inr: price |> Float.round(6)}
+      String.contains?(key, "USDT") -> %{bid_price_usd: price |> Float.round(6)}
+      true                          -> %{bid_price_inr: price |> Float.round(6)}
     end
   end
 
-  defp fill_blank_price_usd(%Bitbns{price_inr: price_inr} = coin, conversion_amount) do
+  defp assign_ask_price(key, price) do
+    key = to_string(key)
     cond do
-      price_inr != nil -> struct(coin, %{price_usd: price_inr / conversion_amount |> Float.round(6)})
-      true             -> coin
+      String.contains?(key, "USDT") -> %{ask_price_usd: price |> Float.round(6)}
+      true                          -> %{ask_price_inr: price |> Float.round(6)}
     end
   end
 
-  defp fill_blank_price_inr(%Bitbns{price_usd: price_usd} = coin, conversion_amount) do
+  defp fill_blank_bid_price_usd(%Bitbns{bid_price_inr: bid_price_inr} = coin, conversion_amount) do
     cond do
-      price_usd != nil -> struct(coin, %{price_inr: price_usd * conversion_amount |> Float.round(6)})
-      true             -> coin
+      bid_price_inr != nil -> struct(coin, %{bid_price_usd: bid_price_inr / conversion_amount |> Float.round(6)})
+      true                 -> coin
+    end
+  end
+
+  defp fill_blank_bid_price_inr(%Bitbns{bid_price_usd: bid_price_usd} = coin, conversion_amount) do
+    cond do
+      bid_price_usd != nil -> struct(coin, %{bid_price_inr: bid_price_usd * conversion_amount |> Float.round(6)})
+      true                 -> coin
+    end
+  end
+
+  defp fill_blank_ask_price_usd(%Bitbns{ask_price_inr: ask_price_inr} = coin, conversion_amount) do
+    cond do
+      ask_price_inr != nil -> struct(coin, %{ask_price_usd: ask_price_inr / conversion_amount |> Float.round(6)})
+      true                 -> coin
+    end
+  end
+
+  defp fill_blank_ask_price_inr(%Bitbns{ask_price_usd: ask_price_usd} = coin, conversion_amount) do
+    cond do
+      ask_price_usd != nil -> struct(coin, %{ask_price_inr: ask_price_usd * conversion_amount |> Float.round(6)})
+      true                 -> coin
     end
   end
 end

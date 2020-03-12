@@ -2,27 +2,54 @@
 
 <!-- INR market table -->
 
-<h3>INR Market @ BitBnS</h3>
+<h3>INR Market @ BitBnS [BitBnS Bids]</h3>
 <table>
   <thead>
     <tr>
       <th>Coin</th>
       <th>Quote</th>
       <th>Coinbase Price</th> 
-      <th>BitBnS Price</th>
+      <th>BitBnS Bid Price</th>
       <th>Difference</th>
       <th>BitBnS Volume</th>
     </tr>
   </thead>
 
   <tbody>
-    <%= for result <- filter_inr_quotes(@results) do %>
+    <%= for result <- filter_inr_quotes_and_sort_by_bid_difference(@results) do %>
       <tr>
         <td><%= result.coin %></td>
         <td><%= result.quote_currency %></td>
         <td><%= result.coinbase_price |> format_dollar() %></td>
-        <td><%= result.bitbns_price |> format_rupee() %></td>
-        <td><%= result.difference |> format_percentage %></td>
+        <td><%= result.bitbns_bid_price |> format_rupee() %></td>
+        <td><%= result.bid_difference |> format_percentage %></td>
+        <td><%= result.bitbns_volume |> format_coin_units() %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h3>INR Market @ BitBnS [BitBnS Asks]</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Coin</th>
+      <th>Quote</th>
+      <th>Coinbase Price</th> 
+      <th>BitBnS Ask Price</th>
+      <th>Difference</th>
+      <th>BitBnS Volume</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <%= for result <- filter_inr_quotes_and_sort_by_ask_difference(@results) do %>
+      <tr>
+        <td><%= result.coin %></td>
+        <td><%= result.quote_currency %></td>
+        <td><%= result.coinbase_price |> format_dollar() %></td>
+        <td><%= result.bitbns_ask_price |> format_rupee() %></td>
+        <td><%= result.ask_difference |> format_percentage %></td>
         <td><%= result.bitbns_volume |> format_coin_units() %></td>
       </tr>
     <% end %>
@@ -31,27 +58,54 @@
 
 <!-- USDT market table -->
 
-<h3>USDT Market @ BitBnS</h3>
+<h3>USDT Market @ BitBnS [BitBnS Bids]</h3>
 <table>
   <thead>
     <tr>
       <th>Coin</th>
       <th>Quote</th>
       <th>Coinbase Price</th> 
-      <th>BitBnS Price</th>
+      <th>BitBnS Bid Price</th>
       <th>Difference</th>
       <th>BitBnS Volume</th>
     </tr>
   </thead>
 
   <tbody>
-    <%= for result <- filter_usdt_quotes(@results) do %>
+    <%= for result <- filter_usdt_quotes_and_sort_by_bid_difference(@results) do %>
       <tr>
         <td><%= result.coin %></td>
         <td><%= result.quote_currency %></td>
         <td><%= result.coinbase_price |> format_dollar %></td>
-        <td><%= result.bitbns_price |> format_rupee %></td>
-        <td><%= result.difference |> format_percentage %></td>
+        <td><%= result.bitbns_bid_price |> format_rupee %></td>
+        <td><%= result.bid_difference |> format_percentage %></td>
+        <td><%= result.bitbns_volume |> format_coin_units %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h3>USDT Market @ BitBnS [BitBnS Asks]</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Coin</th>
+      <th>Quote</th>
+      <th>Coinbase Price</th> 
+      <th>BitBnS Ask Price</th>
+      <th>Difference</th>
+      <th>BitBnS Volume</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <%= for result <- filter_usdt_quotes_and_sort_by_ask_difference(@results) do %>
+      <tr>
+        <td><%= result.coin %></td>
+        <td><%= result.quote_currency %></td>
+        <td><%= result.coinbase_price |> format_dollar %></td>
+        <td><%= result.bitbns_ask_price |> format_rupee %></td>
+        <td><%= result.ask_difference |> format_percentage %></td>
         <td><%= result.bitbns_volume |> format_coin_units %></td>
       </tr>
     <% end %>

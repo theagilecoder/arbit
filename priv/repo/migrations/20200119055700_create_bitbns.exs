@@ -3,10 +3,12 @@ defmodule Arbit.Repo.Migrations.CreateBitbns do
 
   def change do
     create table(:bitbns) do
-      add :coin,        :string
+      add :coin,           :string
       add :quote_currency, :string
-      add :price_inr,      :float
-      add :price_usd,      :float
+      add :bid_price_inr,  :float
+      add :bid_price_usd,  :float
+      add :ask_price_inr,  :float
+      add :ask_price_usd,  :float
       add :volume,         :float
 
       timestamps()

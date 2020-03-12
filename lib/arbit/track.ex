@@ -57,7 +57,7 @@ defmodule Arbit.Track do
   def upsert_bitbns_portfolio() do
     Bitbns.fetch_portfolio()
     |> Task.async_stream(&Repo.insert(&1,
-    on_conflict: {:replace, [:price_usd, :price_inr, :volume, :updated_at]},
+    on_conflict: {:replace, [:bid_price_usd, :bid_price_inr, :ask_price_usd, :ask_price_inr, :volume, :updated_at]},
     conflict_target: [:coin, :quote_currency]))
     |> Enum.map(fn {:ok, result} -> result end)
   end
