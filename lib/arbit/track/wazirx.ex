@@ -12,9 +12,12 @@ defmodule Arbit.Track.Wazirx do
   schema "wazirx" do
     field :coin,           :string
     field :quote_currency, :string
-    field :price_usd,      :float
-    field :price_inr,      :float
-    field :price_btc,      :float
+    field :bid_price_usd,  :float
+    field :ask_price_usd,  :float
+    field :bid_price_inr,  :float
+    field :ask_price_inr,  :float
+    field :bid_price_btc,  :float
+    field :ask_price_btc,  :float
     field :volume,         :float
 
     timestamps()
@@ -28,8 +31,10 @@ defmodule Arbit.Track.Wazirx do
 
     product_list()
     |> Enum.map(&create_wazirx_struct/1)
-    |> Enum.map(&fill_blank_price_inr(&1, conversion_amount))
-    |> Enum.map(&fill_blank_price_usd(&1, conversion_amount))
+    |> Enum.map(&fill_blank_bid_price_inr(&1, conversion_amount))
+    |> Enum.map(&fill_blank_bid_price_usd(&1, conversion_amount))
+    |> Enum.map(&fill_blank_ask_price_inr(&1, conversion_amount))
+    |> Enum.map(&fill_blank_ask_price_usd(&1, conversion_amount))
   end
 
   # Parses API response
@@ -49,22 +54,39 @@ defmodule Arbit.Track.Wazirx do
     |> struct(%{coin:           value.base_unit |> String.upcase()})
     |> struct(%{quote_currency: value.quote_unit |> String.upcase()})
     |> struct(%{volume:         value.volume |> Float.parse() |> elem(0)})
-    |> struct(%{price_inr: (if value.quote_unit == "inr",  do: value.buy |> Float.parse() |> elem(0), else: nil)})
-    |> struct(%{price_btc: (if value.quote_unit == "btc",  do: value.buy |> Float.parse() |> elem(0), else: nil)})
-    |> struct(%{price_usd: (if value.quote_unit == "usdt", do: value.buy |> Float.parse() |> elem(0), else: nil)})
+    |> struct(%{bid_price_inr: (if value.quote_unit == "inr",  do: value.buy  |> Float.parse() |> elem(0), else: nil)})
+    |> struct(%{bid_price_btc: (if value.quote_unit == "btc",  do: value.buy  |> Float.parse() |> elem(0), else: nil)})
+    |> struct(%{bid_price_usd: (if value.quote_unit == "usdt", do: value.buy  |> Float.parse() |> elem(0), else: nil)})
+    |> struct(%{ask_price_inr: (if value.quote_unit == "inr",  do: value.sell |> Float.parse() |> elem(0), else: nil)})
+    |> struct(%{ask_price_btc: (if value.quote_unit == "btc",  do: value.sell |> Float.parse() |> elem(0), else: nil)})
+    |> struct(%{ask_price_usd: (if value.quote_unit == "usdt", do: value.sell |> Float.parse() |> elem(0), else: nil)})
   end
 
-  defp fill_blank_price_inr(%Wazirx{price_usd: price_usd} = coin, conversion_amount) do
+  defp fill_blank_bid_price_inr(%Wazirx{bid_price_usd: bid_price_usd} = coin, conversion_amount) do
     cond do
-      price_usd != nil -> struct(coin, %{price_inr: price_usd * conversion_amount})
-      true             -> coin
+      bid_price_usd != nil -> struct(coin, %{bid_price_inr: bid_price_usd * conversion_amount})
+      true                 -> coin
     end
   end
 
-  defp fill_blank_price_usd(%Wazirx{price_inr: price_inr} = coin, conversion_amount) do
+  defp fill_blank_bid_price_usd(%Wazirx{bid_price_inr: bid_price_inr} = coin, conversion_amount) do
     cond do
-      price_inr != nil -> struct(coin, %{price_usd: price_inr / conversion_amount})
-      true             -> coin
+      bid_price_inr != nil -> struct(coin, %{bid_price_usd: bid_price_inr / conversion_amount})
+      true                 -> coin
+    end
+  end
+
+  defp fill_blank_ask_price_inr(%Wazirx{ask_price_usd: ask_price_usd} = coin, conversion_amount) do
+    cond do
+      ask_price_usd != nil -> struct(coin, %{ask_price_inr: ask_price_usd * conversion_amount})
+      true                 -> coin
+    end
+  end
+
+  defp fill_blank_ask_price_usd(%Wazirx{ask_price_inr: ask_price_inr} = coin, conversion_amount) do
+    cond do
+      ask_price_inr != nil -> struct(coin, %{ask_price_usd: ask_price_inr / conversion_amount})
+      true                 -> coin
     end
   end
 end

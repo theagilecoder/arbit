@@ -3,12 +3,14 @@ defmodule Arbit.Repo.Migrations.CreateCoinbasewazirx do
 
   def change do
     create table(:coinbasewazirx) do
-      add :coin,           :string
-      add :quote_currency, :string
-      add :coinbase_price, :float
-      add :wazirx_price,   :float
-      add :difference,     :float
-      add :wazirx_volume,  :float
+      add :coin,             :string
+      add :quote_currency,   :string
+      add :coinbase_price,   :float
+      add :wazirx_bid_price, :float
+      add :wazirx_ask_price, :float
+      add :bid_difference,   :float
+      add :ask_difference,   :float
+      add :wazirx_volume,    :float
 
       timestamps()
     end

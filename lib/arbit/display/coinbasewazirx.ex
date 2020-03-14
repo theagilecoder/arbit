@@ -10,12 +10,14 @@ defmodule Arbit.Display.Coinbasewazirx do
   alias __MODULE__
 
   schema "coinbasewazirx" do
-    field :coin,           :string
-    field :quote_currency, :string
-    field :coinbase_price, :float
-    field :wazirx_price,   :float
-    field :difference,     :float
-    field :wazirx_volume,  :float
+    field :coin,             :string
+    field :quote_currency,   :string
+    field :coinbase_price,   :float
+    field :wazirx_bid_price, :float
+    field :wazirx_ask_price, :float
+    field :bid_difference,   :float
+    field :ask_difference,   :float
+    field :wazirx_volume,    :float
 
     timestamps()
   end
@@ -104,12 +106,14 @@ defmodule Arbit.Display.Coinbasewazirx do
   # Create %Coinbasewazirx{} struct and fills them
   defp create_coinbasewazirx_struct({coinbase_portfolio, wazirx_portfolio}) do
     %Coinbasewazirx{}
-    |> struct(%{coin:           coinbase_portfolio.coin})
-    |> struct(%{quote_currency: wazirx_portfolio.quote_currency})
-    |> struct(%{coinbase_price: coinbase_portfolio.price_usd})
-    |> struct(%{wazirx_price:   wazirx_portfolio.price_inr})
-    |> struct(%{wazirx_volume:  wazirx_portfolio.volume})
-    |> struct(%{difference:     compute_difference(coinbase_portfolio.price_inr, wazirx_portfolio.price_inr)})
+    |> struct(%{coin:             coinbase_portfolio.coin})
+    |> struct(%{quote_currency:   wazirx_portfolio.quote_currency})
+    |> struct(%{coinbase_price:   coinbase_portfolio.price_usd})
+    |> struct(%{wazirx_bid_price: wazirx_portfolio.bid_price_inr})
+    |> struct(%{bid_difference:   compute_difference(coinbase_portfolio.price_inr, wazirx_portfolio.bid_price_inr)})
+    |> struct(%{wazirx_ask_price: wazirx_portfolio.ask_price_inr})
+    |> struct(%{ask_difference:   compute_difference(coinbase_portfolio.price_inr, wazirx_portfolio.ask_price_inr)})
+    |> struct(%{wazirx_volume:    wazirx_portfolio.volume})
   end
 
   # Compute difference %
