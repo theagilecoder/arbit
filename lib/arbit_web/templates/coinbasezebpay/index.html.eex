@@ -1,0 +1,118 @@
+<h1>Coinbase - Zebpay</h1>
+
+<!-- INR market table -->
+
+<h3>INR Market @ Zebpay [Zebpay Bids]</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Coin</th>
+      <th>Quote</th>
+      <th>Coinbase Price</th> 
+      <th>Zebpay Bid Price</th>
+      <th>Difference</th>
+      <th>Zebpay Volume</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <%= for result <- filter_inr_quotes_and_sort_by_bid_difference(@results) do %>
+      <tr>
+        <td><%= result.coin %></td>
+        <td><%= result.quote_currency %></td>
+        <td><%= result.coinbase_price |> format_dollar() %></td>
+        <td><%= result.zebpay_bid_price |> format_rupee() %></td>
+        <td><%= result.bid_difference |> format_percentage %></td>
+        <td><%= result.zebpay_volume |> format_coin_units() %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h3>INR Market @ Zebpay [Zebpay Asks]</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Coin</th>
+      <th>Quote</th>
+      <th>Coinbase Price</th> 
+      <th>Zebpay Ask Price</th>
+      <th>Difference</th>
+      <th>Zebpay Volume</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <%= for result <- filter_inr_quotes_and_sort_by_ask_difference(@results) do %>
+      <tr>
+        <td><%= result.coin %></td>
+        <td><%= result.quote_currency %></td>
+        <td><%= result.coinbase_price |> format_dollar() %></td>
+        <td><%= result.zebpay_ask_price |> format_rupee() %></td>
+        <td><%= result.ask_difference |> format_percentage %></td>
+        <td><%= result.zebpay_volume |> format_coin_units() %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<!-- USDT market table -->
+
+<h3>USDT Market @ Zebpay [Zebpay Bids]</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Coin</th>
+      <th>Quote</th>
+      <th>Coinbase Price</th> 
+      <th>Zebpay Bid Price</th>
+      <th>Difference</th>
+      <th>Zebpay Volume</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <%= for result <- filter_usdt_quotes_and_sort_by_bid_difference(@results) do %>
+      <tr>
+        <td><%= result.coin %></td>
+        <td><%= result.quote_currency %></td>
+        <td><%= result.coinbase_price |> format_dollar %></td>
+        <td><%= result.zebpay_bid_price |> format_rupee %></td>
+        <td><%= result.bid_difference |> format_percentage %></td>
+        <td><%= result.zebpay_volume |> format_coin_units %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h3>USDT Market @ Zebpay [Zebpay Asks]</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Coin</th>
+      <th>Quote</th>
+      <th>Coinbase Price</th> 
+      <th>Zebpay Ask Price</th>
+      <th>Difference</th>
+      <th>Zebpay Volume</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <%= for result <- filter_usdt_quotes_and_sort_by_bid_difference(@results) do %>
+      <tr>
+        <td><%= result.coin %></td>
+        <td><%= result.quote_currency %></td>
+        <td><%= result.coinbase_price |> format_dollar %></td>
+        <td><%= result.zebpay_ask_price |> format_rupee %></td>
+        <td><%= result.ask_difference |> format_percentage %></td>
+        <td><%= result.zebpay_volume |> format_coin_units %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<ul>
+  <li>* Last updated at IST Time <%= ist_time(@results) %></li>
+  <li>* Percentages are calculated over the 1st exchange</li>
+</ul>
