@@ -97,7 +97,7 @@ defmodule Arbit.Track do
   def upsert_coindcx_portfolio() do
     Coindcx.fetch_portfolio()
     |> Task.async_stream(&Repo.insert(&1,
-        on_conflict: {:replace, [:price_usd, :price_inr, :price_btc, :volume, :updated_at]},
+        on_conflict: {:replace, [:bid_price_usd, :bid_price_inr, :bid_price_btc, :ask_price_usd, :ask_price_inr, :ask_price_btc, :volume, :updated_at]},
         conflict_target: [:coin, :quote_currency]))
     |> Enum.map(fn {:ok, result} -> result end)
   end

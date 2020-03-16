@@ -10,12 +10,14 @@ defmodule Arbit.Display.Coinbasecoindcx do
   alias __MODULE__
 
   schema "coinbasecoindcx" do
-    field :coin,           :string
-    field :quote_currency, :string
-    field :coinbase_price, :float
-    field :coindcx_price,   :float
-    field :difference,     :float
-    field :coindcx_volume,  :float
+    field :coin,              :string
+    field :quote_currency,    :string
+    field :coinbase_price,    :float
+    field :coindcx_bid_price, :float
+    field :coindcx_ask_price, :float
+    field :bid_difference,    :float
+    field :ask_difference,    :float
+    field :coindcx_volume,    :float
 
     timestamps()
   end
@@ -161,12 +163,14 @@ defmodule Arbit.Display.Coinbasecoindcx do
   # Create %Coinbasecoindcx{} struct and fills them
   defp create_coinbasecoindcx_struct({coinbase_portfolio, coindcx_portfolio}) do
     %Coinbasecoindcx{}
-    |> struct(%{coin:           coinbase_portfolio.coin})
-    |> struct(%{quote_currency: coindcx_portfolio.quote_currency})
-    |> struct(%{coinbase_price: coinbase_portfolio.price_usd})
-    |> struct(%{coindcx_price:  coindcx_portfolio.price_inr})
-    |> struct(%{coindcx_volume: coindcx_portfolio.volume})
-    |> struct(%{difference:     compute_difference(coinbase_portfolio.price_inr, coindcx_portfolio.price_inr)})
+    |> struct(%{coin:              coinbase_portfolio.coin})
+    |> struct(%{quote_currency:    coindcx_portfolio.quote_currency})
+    |> struct(%{coinbase_price:    coinbase_portfolio.price_usd})
+    |> struct(%{coindcx_bid_price: coindcx_portfolio.bid_price_inr})
+    |> struct(%{bid_difference:    compute_difference(coinbase_portfolio.price_inr, coindcx_portfolio.bid_price_inr)})
+    |> struct(%{coindcx_ask_price: coindcx_portfolio.ask_price_inr})
+    |> struct(%{ask_difference:    compute_difference(coinbase_portfolio.price_inr, coindcx_portfolio.ask_price_inr)})
+    |> struct(%{coindcx_volume:    coindcx_portfolio.volume})
   end
 
   # Compute difference %

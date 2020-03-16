@@ -10,9 +10,12 @@ defmodule Arbit.Track.Coindcx do
   schema "coindcx" do
     field :coin,           :string
     field :quote_currency, :string
-    field :price_usd,      :float
-    field :price_inr,      :float
-    field :price_btc,      :float
+    field :bid_price_usd,  :float
+    field :bid_price_inr,  :float
+    field :bid_price_btc,  :float
+    field :ask_price_usd,  :float
+    field :ask_price_inr,  :float
+    field :ask_price_btc,  :float
     field :volume,         :float
 
     timestamps()
@@ -27,8 +30,10 @@ defmodule Arbit.Track.Coindcx do
     product_list()
     |> remove_bad_entries()
     |> Enum.map(&create_coindcx_struct/1)
-    |> Enum.map(&fill_blank_price_usd(&1, conversion_amount))
-    |> Enum.map(&fill_blank_price_inr(&1, conversion_amount))
+    |> Enum.map(&fill_blank_bid_price_usd(&1, conversion_amount))
+    |> Enum.map(&fill_blank_bid_price_inr(&1, conversion_amount))
+    |> Enum.map(&fill_blank_ask_price_usd(&1, conversion_amount))
+    |> Enum.map(&fill_blank_ask_price_inr(&1, conversion_amount))
   end
 
   defp product_list do
@@ -46,7 +51,9 @@ defmodule Arbit.Track.Coindcx do
     list
     |> Enum.filter(fn x -> Map.has_key?(x, :volume) end)
     |> Enum.reject(fn x -> x.bid == nil end)
+    |> Enum.reject(fn x -> x.ask == nil end)
     |> Enum.reject(fn x -> String.contains?(x.bid, "e") end)
+    |> Enum.reject(fn x -> String.contains?(x.ask, "e") end)
   end
 
   # Convert a map to a %Coindcx{} struct
@@ -55,7 +62,8 @@ defmodule Arbit.Track.Coindcx do
     |> struct!(%{coin: sanitize_name(coin_map.market)})
     |> struct!(%{quote_currency: detect_quote_currency(coin_map.market)})
     |> struct!(%{volume: coin_map.volume |> Float.parse() |> elem(0)})
-    |> struct!(assign_price(coin_map.market, coin_map.bid))
+    |> struct!(assign_price_bid(coin_map.market, coin_map.bid))
+    |> struct!(assign_price_ask(coin_map.market, coin_map.ask))
   end
 
   defp detect_quote_currency(market) do
@@ -86,28 +94,53 @@ defmodule Arbit.Track.Coindcx do
     end
   end
 
-  defp assign_price(market, bid) do
+  defp assign_price_bid(market, bid) do
     cond do
-      String.ends_with?(market, "INR")  -> %{price_inr: bid |> Float.parse() |> elem(0)}
-      String.ends_with?(market, "BTC")  -> %{price_btc: bid |> Float.parse() |> elem(0)}
-      String.ends_with?(market, "USDT") -> %{price_usd: bid |> Float.parse() |> elem(0)}
-      String.ends_with?(market, "TUSD") -> %{price_usd: bid |> Float.parse() |> elem(0)}
-      String.ends_with?(market, "USDC") -> %{price_usd: bid |> Float.parse() |> elem(0)}
-      true                              -> %{price_inr: nil}
+      String.ends_with?(market, "INR")  -> %{bid_price_inr: bid |> Float.parse() |> elem(0)}
+      String.ends_with?(market, "BTC")  -> %{bid_price_btc: bid |> Float.parse() |> elem(0)}
+      String.ends_with?(market, "USDT") -> %{bid_price_usd: bid |> Float.parse() |> elem(0)}
+      String.ends_with?(market, "TUSD") -> %{bid_price_usd: bid |> Float.parse() |> elem(0)}
+      String.ends_with?(market, "USDC") -> %{bid_price_usd: bid |> Float.parse() |> elem(0)}
+      true                              -> %{bid_price_inr: nil}
     end
   end
 
-  defp fill_blank_price_usd(%Coindcx{price_inr: price_inr} = coin, conversion_amount) do
+  defp assign_price_ask(market, ask) do
     cond do
-      price_inr != nil -> struct(coin, %{price_usd: price_inr / conversion_amount })
-      true             -> coin
+      String.ends_with?(market, "INR")  -> %{ask_price_inr: ask |> Float.parse() |> elem(0)}
+      String.ends_with?(market, "BTC")  -> %{ask_price_btc: ask |> Float.parse() |> elem(0)}
+      String.ends_with?(market, "USDT") -> %{ask_price_usd: ask |> Float.parse() |> elem(0)}
+      String.ends_with?(market, "TUSD") -> %{ask_price_usd: ask |> Float.parse() |> elem(0)}
+      String.ends_with?(market, "USDC") -> %{ask_price_usd: ask |> Float.parse() |> elem(0)}
+      true                              -> %{ask_price_inr: nil}
     end
   end
 
-  defp fill_blank_price_inr(%Coindcx{price_usd: price_usd} = coin, conversion_amount) do
+  defp fill_blank_bid_price_usd(%Coindcx{bid_price_inr: bid_price_inr} = coin, conversion_amount) do
     cond do
-      price_usd != nil -> struct(coin, %{price_inr: price_usd * conversion_amount })
-      true             -> coin
+      bid_price_inr != nil -> struct(coin, %{bid_price_usd: bid_price_inr / conversion_amount })
+      true                 -> coin
+    end
+  end
+
+  defp fill_blank_bid_price_inr(%Coindcx{bid_price_usd: bid_price_usd} = coin, conversion_amount) do
+    cond do
+      bid_price_usd != nil -> struct(coin, %{bid_price_inr: bid_price_usd * conversion_amount })
+      true                 -> coin
+    end
+  end
+
+  defp fill_blank_ask_price_usd(%Coindcx{ask_price_inr: ask_price_inr} = coin, conversion_amount) do
+    cond do
+      ask_price_inr != nil -> struct(coin, %{ask_price_usd: ask_price_inr / conversion_amount })
+      true                 -> coin
+    end
+  end
+
+  defp fill_blank_ask_price_inr(%Coindcx{ask_price_usd: ask_price_usd} = coin, conversion_amount) do
+    cond do
+      ask_price_usd != nil -> struct(coin, %{ask_price_inr: ask_price_usd * conversion_amount })
+      true                 -> coin
     end
   end
 end

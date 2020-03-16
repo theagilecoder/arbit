@@ -5,9 +5,12 @@ defmodule Arbit.Repo.Migrations.CreateCoindcx do
     create table(:coindcx) do
       add :coin,           :string
       add :quote_currency, :string
-      add :price_inr,      :float
-      add :price_usd,      :float
-      add :price_btc,      :float
+      add :bid_price_inr,  :float
+      add :bid_price_usd,  :float
+      add :bid_price_btc,  :float
+      add :ask_price_inr,  :float
+      add :ask_price_usd,  :float
+      add :ask_price_btc,  :float
       add :volume,         :float
 
       timestamps()
