@@ -57,13 +57,13 @@ defmodule Arbit.Track.Zebpay do
     %Zebpay{}
     |> struct(%{coin:           map.virtualCurrency})
     |> struct(%{quote_currency: map.currency})
-    |> struct(%{volume:         (if is_number(map.volume), do: map.volume/1, else: map.volume |> Float.parse() |> elem(0))})
-    |> struct(%{bid_price_inr:  (if map.currency == "INR",  do: map.buy  |> Float.parse() |> elem(0), else: nil)})
-    |> struct(%{bid_price_btc:  (if map.currency == "BTC",  do: map.buy  |> Float.parse() |> elem(0), else: nil)})
-    |> struct(%{bid_price_usd:  (if map.currency == "USDT", do: map.buy  |> Float.parse() |> elem(0), else: nil)})
-    |> struct(%{ask_price_inr:  (if map.currency == "INR",  do: map.sell |> Float.parse() |> elem(0), else: nil)})
-    |> struct(%{ask_price_btc:  (if map.currency == "BTC",  do: map.sell |> Float.parse() |> elem(0), else: nil)})
-    |> struct(%{ask_price_usd:  (if map.currency == "USDT", do: map.sell |> Float.parse() |> elem(0), else: nil)})
+    |> struct(%{volume:         (if is_number(map.volume),  do: map.volume/1, else: map.volume |> Float.parse() |> elem(0))})
+    |> struct(%{bid_price_inr:  (if map.currency == "INR",  do: map.sell |> Float.parse() |> elem(0), else: nil)})
+    |> struct(%{bid_price_btc:  (if map.currency == "BTC",  do: map.sell |> Float.parse() |> elem(0), else: nil)})
+    |> struct(%{bid_price_usd:  (if map.currency == "USDT", do: map.sell |> Float.parse() |> elem(0), else: nil)})
+    |> struct(%{ask_price_inr:  (if map.currency == "INR",  do: map.buy  |> Float.parse() |> elem(0), else: nil)})
+    |> struct(%{ask_price_btc:  (if map.currency == "BTC",  do: map.buy  |> Float.parse() |> elem(0), else: nil)})
+    |> struct(%{ask_price_usd:  (if map.currency == "USDT", do: map.buy  |> Float.parse() |> elem(0), else: nil)})
   end
 
   defp fill_blank_bid_price_inr(%Zebpay{bid_price_usd: bid_price_usd} = coin, conversion_amount) do
