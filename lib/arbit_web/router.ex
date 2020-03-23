@@ -1,5 +1,6 @@
 defmodule ArbitWeb.Router do
   use ArbitWeb, :router
+  use Pow.Phoenix.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -13,10 +14,21 @@ defmodule ArbitWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", ArbitWeb do
+  pipeline :protected do
+    plug Pow.Plug.RequireAuthenticated,
+      error_handler: Pow.Phoenix.PlugErrorHandler
+  end
+
+  scope "/" do
     pipe_through :browser
 
-    get "/", PageController, :index
+    pow_routes()
+    get "/", ArbitWeb.PageController, :index
+  end
+
+  scope "/", ArbitWeb do
+    pipe_through [:browser, :protected]
+
     get "/faq", PageController, :show
     get "/coinbasebitbns", CoinbasebitbnsController, :index
     get "/coinbasewazirx", CoinbasewazirxController, :index

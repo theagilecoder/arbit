@@ -19,8 +19,9 @@
   <body>
     <div class="container">
       <header>
-        <a href="/"><img src="images/logo.png" class="logo"></a>
-        <a href="#"><button>Register</button></a>
+        <a href="/"><%= img_tag(Routes.static_url(@conn, "/images/logo.png"), class: "logo") %></a>
+        <a href="/session/new"><button>Login</button></a>
+        <a href="/registration/new"><button>Register</button></a>
       </header>
       <nav>
 				<a href="/coinbasebitbns">Coinbase - BitBnS</a>

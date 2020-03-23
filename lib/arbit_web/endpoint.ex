@@ -42,5 +42,7 @@ defmodule ArbitWeb.Endpoint do
     key: "_arbit_key",
     signing_salt: "ML16StVa"
 
+  plug Pow.Plug.Session, otp_app: :arbit
+
   plug ArbitWeb.Router
 end
