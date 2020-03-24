@@ -156,3 +156,33 @@ main a img{
 h4:nth-of-type(even){
 	font-weight: 100;
 }
+
+/* Main - Login Page */
+
+main span {
+	display: none;
+}
+
+main form label{
+	display: block;
+}
+
+main form input {
+	display: block;
+	padding: 6px 10px;
+	margin: 8px 0;
+	border-radius: 4px;
+}
+
+main button {
+	width: 100%;
+	color: white;
+	font-weight: 500;
+	font-size: 1.2em;
+	padding: 5px 15px;
+	background-color: rgba(0,136,169,1);
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: all 0.3s ease 0s;
+}
