@@ -29,7 +29,7 @@
 header{
 	grid-area: header;
 	display: flex;
-	justify-content: space-between;
+	justify-content: flex-end;
 	align-items: center;
 	padding: 15px 5vw;
 	background-color: #24252A;
@@ -38,6 +38,10 @@ header{
 .logo {
 	cursor: pointer;
 	height: 1.5em;
+}
+
+header a {
+	margin-right: auto;
 }
 
 span {
@@ -49,6 +53,7 @@ span {
 	border-radius: 5px;
 	cursor: pointer;
 	transition: all 0.3s ease 0s;
+	margin-left: 15px;
 }
 
 span:hover {
