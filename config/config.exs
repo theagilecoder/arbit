@@ -29,7 +29,9 @@ config :phoenix, :json_library, Jason
 config :arbit, :pow,
   user: Arbit.Users.User,
   repo: Arbit.Repo,
-  routes_backend: ArbitWeb.Pow.Routes
+  routes_backend: ArbitWeb.Pow.Routes,
+  extensions: [PowPersistentSession],
+  controller_callbacks: Pow.Extension.Phoenix.ControllerCallbacks
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

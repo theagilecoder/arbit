@@ -42,7 +42,11 @@ defmodule ArbitWeb.Endpoint do
     key: "_arbit_key",
     signing_salt: "ML16StVa"
 
+  # Enable Pow session based authentication
   plug Pow.Plug.Session, otp_app: :arbit
+
+  # Enable Pow persistent sessions
+  plug PowPersistentSession.Plug.Cookie
 
   plug ArbitWeb.Router
 end
