@@ -19,7 +19,7 @@
   <body>
     <div class="container">
       <header>
-        <a href="/"><%= img_tag(Routes.static_url(@conn, "/images/logo.png"), class: "logo") %></a>
+        <a href="/"><%= img_tag(Routes.static_path(@conn, "/images/logo.png"), class: "logo") %></a>
         <%= if Pow.Plug.current_user(@conn) do %>
           <span><%= link "Account", to: Routes.pow_registration_path(@conn, :edit) %></span>
           <span><%= link "Sign out", to: Routes.pow_session_path(@conn, :delete), method: :delete %></span>
