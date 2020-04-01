@@ -5,7 +5,7 @@ defmodule Arbit.Track do
 
   import Ecto.Query, warn: false
   alias Arbit.Repo
-  alias Arbit.Track.{Currency, Coinbase, Bitbns, Wazirx, Coindcx, Zebpay}
+  alias Arbit.Track.{Currency, Coinbase, Bitbns, Wazirx, Coindcx, Zebpay, Binance}
 
   #----------#
   # Currency #
@@ -126,4 +126,24 @@ defmodule Arbit.Track do
   Get all entries from Zebpay table
   """
   def list_zebpay, do: Repo.all(Zebpay)
+
+  #---------#
+  # Binance #
+  #---------#
+
+  @doc """
+  Parallely upsert each %Binance{} struct in Zebpay table
+  """
+  def upsert_binance_portfolio() do
+    Binance.fetch_portfolio()
+    |> Task.async_stream(&Repo.insert(&1,
+        on_conflict: {:replace, [:price_usd, :price_inr, :price_btc, :updated_at]},
+        conflict_target: [:coin, :quote_currency]))
+    |> Enum.map(fn {:ok, result} -> result end)
+  end
+
+  @doc """
+  Get all entries from Binance table
+  """
+  def list_binance, do: Repo.all(Binance)
 end

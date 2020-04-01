@@ -22,6 +22,7 @@ defmodule Arbit.Scheduler do
     Track.upsert_wazirx_portfolio()
     Track.upsert_coindcx_portfolio()
     Track.upsert_zebpay_portfolio()
+    Track.upsert_binance_portfolio()
     # Display context
     Display.upsert_coinbasebitbns()
     Display.upsert_coinbasewazirx()
