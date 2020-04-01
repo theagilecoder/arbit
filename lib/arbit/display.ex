@@ -7,11 +7,11 @@ defmodule Arbit.Display do
 
   import Ecto.Query, warn: false
   alias Arbit.Repo
-  alias Arbit.Display.{Coinbasebitbns, Coinbasewazirx, Coinbasecoindcx, Coinbasezebpay}
+  alias Arbit.Display.{Coinbasebitbns, Coinbasewazirx, Coinbasecoindcx, Coinbasezebpay, Binancebitbns}
 
-  #--------#
-  # Bitbns #
-  #--------#
+  #-------------------#
+  # Coinbase - Bitbns #
+  #-------------------#
 
   @doc """
   Upserts results in coinbasebitbns table
@@ -29,9 +29,9 @@ defmodule Arbit.Display do
   """
   def list_coinbasebitbns, do: Repo.all(Coinbasebitbns)
 
-  #--------#
-  # WazirX #
-  #--------#
+  #-------------------#
+  # Coinbase - WazirX #
+  #-------------------#
 
   @doc """
   Upserts results in coinbasewazirx table
@@ -49,9 +49,9 @@ defmodule Arbit.Display do
   """
   def list_coinbasewazirx, do: Repo.all(Coinbasewazirx)
 
-  #---------#
-  # CoinDCX #
-  #---------#
+  #--------------------#
+  # Coinbase - CoinDCX #
+  #--------------------#
 
   @doc """
   Upserts results in coinbasecoindcx table
@@ -69,9 +69,9 @@ defmodule Arbit.Display do
   """
   def list_coinbasecoindcx, do: Repo.all(Coinbasecoindcx)
 
-  #--------#
-  # Zebpay #
-  #--------#
+  #-------------------#
+  # Coinbase - Zebpay #
+  #-------------------#
 
   @doc """
   Upserts results in coinbasezebpay table
@@ -88,4 +88,24 @@ defmodule Arbit.Display do
     Display all results
   """
   def list_coinbasezebpay, do: Repo.all(Coinbasezebpay)
+
+  #------------------#
+  # Binance - Bitbns #
+  #------------------#
+
+  @doc """
+  Upserts results in binancebitbns table
+  """
+  def upsert_binancebitbns do
+    Binancebitbns.compute_arbitrage()
+    |> Task.async_stream(&Repo.insert(&1,
+        on_conflict: {:replace, [:binance_price, :bitbns_bid_price, :bitbns_ask_price, :bitbns_volume, :bid_difference, :ask_difference, :updated_at]},
+        conflict_target: [:coin, :binance_quote_currency, :bitbns_quote_currency]))
+    |> Enum.map(fn {:ok, result} -> result end)
+  end
+
+  @doc """
+    Display all results
+  """
+  def list_binancebitbns, do: Repo.all(Binancebitbns)
 end

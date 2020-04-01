@@ -28,6 +28,7 @@ defmodule Arbit.Scheduler do
     Display.upsert_coinbasewazirx()
     Display.upsert_coinbasecoindcx()
     Display.upsert_coinbasezebpay()
+    Display.upsert_binancebitbns()
     schedule_work()
     {:noreply, state}
   end
