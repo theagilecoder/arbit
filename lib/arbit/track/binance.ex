@@ -39,11 +39,45 @@ defmodule Arbit.Track.Binance do
     "https://api.binance.com/api/v3/ticker/price"
   end
 
-  defp filter_relevant_pairs(coin_map) do
-    Enum.filter(coin_map, fn %{symbol: symbol} -> String.ends_with?(symbol, ["USDC", "USDT", "BTC"]) end)
+  defp filter_relevant_pairs(coin_list) do
+    # btc_pairs_list = Enum.filter(coin_list, & String.ends_with?(&1.symbol, "BTC"))
+
+    # Coins with USDC pairing present in UI
+    usdc_ui_pairs_list = [
+      "ADAUSDC", "ATOMUSDC", "BATUSDC", "BCHUSDC", "BGBPUSDC", "BNBUSDC", "BTCUSDC",
+      "BTTUSDC", "EOSUSDC", "ETHUSDC", "LINKUSDC", "LTCUSDC", "NEOUSDC", "ONEUSDC",
+      "TOMOUSDC", "TRXUSDC", "WAVESUSDC", "WINUSDC", "XRPUSDC", "ZECUSDC"
+    ]
+
+    # Include coins only that are present in UI
+    usdc_pairs_list = Enum.filter(coin_list, & &1.symbol in usdc_ui_pairs_list)
+
+    # Coins with USDT pairing present in UI
+    usdt_ui_pairs_list = [
+      "ADAUSDT", "AIONUSDT", "ALGOUSDT", "ANKRUSDT", "ARPAUSDT", "ATOMUSDT", "BANDUSDT",
+      "BATUSDT", "BCHUSDT", "BEAMUSDT", "BNBUSDT", "BNTUSDT", "BTCUSDT", "BTSUSDT", "BTTUSDT",
+      "BUSDUSDT", "CELRUSDT", "CHZUSDT", "COCOSUSDT", "COSUSDT", "COTIUSDT", "CTXCUSDT",
+      "CVCUSDT", "DASHUSDT", "DENTUSDT", "DOCKUSDT", "DOGEUSDT", "DREPUSDT", "DUSKUSDT",
+      "ENJUSDT", "EOSUSDT", "ERDUSDT", "ETCUSDT", "ETHUSDT", "EURUSDT", "FETUSDT", "FTMUSDT",
+      "FTTUSDT", "FUNUSDT", "GTOUSDT", "HBARUSDT", "HCUSDT", "HOTUSDT", "ICXUSDT", "IOSTUSDT",
+      "IOTAUSDT", "IOTXUSDT", "KAVAUSDT", "KEYUSDT", "LINKUSDT", "LSKUSDT", "LTCUSDT",
+      "LTOUSDT", "MATICUSDT", "MBLUSDT", "MCOUSDT", "MFTUSDT", "MITHUSDT", "MTLUSDT",
+      "NANOUSDT", "NEOUSDT", "NKNUSDT", "NPXSUSDT", "NULSUSDT", "OGNUSDT", "OMGUSDT",
+      "ONEUSDT", "ONGUSDT", "ONTUSDT", "PAXUSDT", "PERLUSDT", "QTUMUSDT", "RENUSDT", "RLCUSDT",
+      "RVNUSDT", "STORMUSDT", "STPTUSDT", "STRATUSDT", "STXUSDT", "TCTUSDT", "TFUELUSDT",
+      "THETAUSDT", "TOMOUSDT", "TROYUSDT", "TRXUSDT", "TUSDUSDT", "USDCUSDT", "USDSUSDT",
+      "VETUSDT", "VITEUSDT", "WANUSDT", "WAVESUSDT", "WINUSDT", "WRXUSDT", "XLMUSDT",
+      "XMRUSDT", "XRPUSDT", "XTZUSDT", "ZECUSDT", "ZILUSDT", "ZRXUSDT"
+    ]
+
+    # Include coins only that are present in UI
+    usdt_pairs_list = Enum.filter(coin_list, & &1.symbol in usdt_ui_pairs_list)
+
+    # Return all relevant coin pairs
+    usdc_pairs_list ++ usdt_pairs_list
   end
 
-  # Convert a map to a %Binance{} struct
+  # Convert a coin map to a %Binance{} struct
   defp create_binance_struct(coin_map) do
     quote_currency = detect_quote_currency(coin_map.symbol)
 
