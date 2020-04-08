@@ -38,7 +38,7 @@ defmodule Arbit.Track.Coinbase do
 
   defp filter_relevant_pairs(pairs) do
     pairs
-    |> Enum.filter(& &1.quote_currency in ["USD", "BTC"])
+    |> Enum.filter(& &1.quote_currency in ["USD", "BTC", "USDC"])
     |> Enum.map(& &1.id)
   end
 
@@ -53,7 +53,7 @@ defmodule Arbit.Track.Coinbase do
     %Coinbase{}
     |> struct(%{coin: coin})
     |> struct(%{quote_currency: quote_currency})
-    |> struct(%{price_usd: (if quote_currency == "USD", do: body.price |> Float.parse() |> elem(0), else: nil)})
+    |> struct(%{price_usd: (if quote_currency in ["USD", "USDC"], do: body.price |> Float.parse() |> elem(0), else: nil)})
     |> struct(%{price_btc: (if quote_currency == "BTC", do: body.price |> Float.parse() |> elem(0), else: nil)})
   end
 
