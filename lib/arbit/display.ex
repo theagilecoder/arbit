@@ -80,7 +80,7 @@ defmodule Arbit.Display do
     Coinbasezebpay.compute_arbitrage()
     |> Task.async_stream(&Repo.insert(&1,
         on_conflict: {:replace, [:coinbase_price, :zebpay_bid_price, :zebpay_ask_price, :zebpay_volume, :bid_difference, :ask_difference, :updated_at]},
-        conflict_target: [:coin, :quote_currency]))
+        conflict_target: [:coin, :zebpay_quote, :coinbase_quote]))
     |> Enum.map(fn {:ok, result} -> result end)
   end
 

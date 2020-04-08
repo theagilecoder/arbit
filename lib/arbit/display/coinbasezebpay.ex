@@ -11,7 +11,8 @@ defmodule Arbit.Display.Coinbasezebpay do
 
   schema "coinbasezebpay" do
     field :coin,             :string
-    field :quote_currency,   :string
+    field :coinbase_quote,   :string
+    field :zebpay_quote,     :string
     field :coinbase_price,   :float
     field :zebpay_bid_price, :float
     field :zebpay_ask_price, :float
@@ -27,21 +28,21 @@ defmodule Arbit.Display.Coinbasezebpay do
   & return a list of %Coinbasezebpay{} structs
   """
   def compute_arbitrage do
-    compute_arbitrage_inr_market() ++ compute_arbitrage_usdt_market()
+    compute_arbitrage_usd_inr() ++ compute_arbitrage_usdc_inr()
   end
 
   @doc """
   Compute arbitrage between Coinbase USD coins & Zebpay INR coins
   and return a list of %Coinbasezebpay{} structs
   """
-  def compute_arbitrage_inr_market() do
+  def compute_arbitrage_usd_inr() do
     # Get Coinbase & Zebpay portfolios
     coinbase_portfolio = Track.list_coinbase()
     zebpay_portfolio   = Track.list_zebpay()
 
     # Filter in the coins belonging to the relevant market
     coinbase_portfolio = filter_market(coinbase_portfolio, "USD")
-    zebpay_portfolio   = filter_market(zebpay_portfolio,   "INR")
+    zebpay_portfolio   = filter_market(zebpay_portfolio, "INR")
 
     # Filter in common coins in the two portfolios
     coinbase_portfolio = filter_common_coins(coinbase_portfolio, zebpay_portfolio)
@@ -59,17 +60,17 @@ defmodule Arbit.Display.Coinbasezebpay do
   end
 
   @doc """
-  Compute arbitrage between Coinbase USD coins & Zebpay USDT coins
+  Compute arbitrage between Coinbase USDC coins & Zebpay INR coins
   and return a list of %Coinbasezebpay{} structs
   """
-  def compute_arbitrage_usdt_market() do
+  def compute_arbitrage_usdc_inr() do
     # Get Coinbase & Zebpay portfolios
     coinbase_portfolio = Track.list_coinbase()
     zebpay_portfolio   = Track.list_zebpay()
 
     # Filter in the coins belonging to the relevant market
-    coinbase_portfolio = filter_market(coinbase_portfolio, "USD")
-    zebpay_portfolio   = filter_market(zebpay_portfolio,  "USDT")
+    coinbase_portfolio = filter_market(coinbase_portfolio, "USDC")
+    zebpay_portfolio   = filter_market(zebpay_portfolio, "INR")
 
     # Filter in common coins in the two portfolios
     coinbase_portfolio = filter_common_coins(coinbase_portfolio, zebpay_portfolio)
@@ -107,7 +108,8 @@ defmodule Arbit.Display.Coinbasezebpay do
   defp create_coinbasezebpay_struct({coinbase_portfolio, zebpay_portfolio}) do
     %Coinbasezebpay{}
     |> struct(%{coin:             coinbase_portfolio.coin})
-    |> struct(%{quote_currency:   zebpay_portfolio.quote_currency})
+    |> struct(%{coinbase_quote:   coinbase_portfolio.quote_currency})
+    |> struct(%{zebpay_quote:     zebpay_portfolio.quote_currency})
     |> struct(%{coinbase_price:   coinbase_portfolio.price_usd})
     |> struct(%{zebpay_bid_price: zebpay_portfolio.bid_price_inr})
     |> struct(%{bid_difference:   compute_difference(coinbase_portfolio.price_inr, zebpay_portfolio.bid_price_inr)})
