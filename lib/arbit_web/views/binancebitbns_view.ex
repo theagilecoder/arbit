@@ -2,42 +2,18 @@ defmodule ArbitWeb.BinancebitbnsView do
   use ArbitWeb, :view
 
   @doc """
-  Filters USDC - INR quoted coins from all results and sorts in descending order of bid_difference
+  Sorts in descending order of bid_difference
   """
-  def filter_usdc_inr_and_sort_by_bid_difference(results) do
+  def sort_by_bid_difference(results) do
     results
-    |> Enum.filter(fn %{binance_quote_currency: binance_quote_currency} -> binance_quote_currency == "USDC" end)
-    |> Enum.filter(fn %{bitbns_quote_currency: bitbns_quote_currency} -> bitbns_quote_currency == "INR" end)
     |> Enum.sort_by(fn x -> x.bid_difference end, &>=/2)
   end
 
   @doc """
-  Filters USDC - INR quoted coins from all results and sorts in descending order of ask_difference
+  Sorts in descending order of ask_difference
   """
-  def filter_usdc_inr_and_sort_by_ask_difference(results) do
+  def sort_by_ask_difference(results) do
     results
-    |> Enum.filter(fn %{binance_quote_currency: binance_quote_currency} -> binance_quote_currency == "USDC" end)
-    |> Enum.filter(fn %{bitbns_quote_currency: bitbns_quote_currency} -> bitbns_quote_currency == "INR" end)
-    |> Enum.sort_by(fn x -> x.ask_difference end, &>=/2)
-  end
-
-  @doc """
-  Filters USDT - INR quoted coins from all results and sorts in descending order of bid_difference
-  """
-  def filter_usdt_inr_and_sort_by_bid_difference(results) do
-    results
-    |> Enum.filter(fn %{binance_quote_currency: binance_quote_currency} -> binance_quote_currency == "USDT" end)
-    |> Enum.filter(fn %{bitbns_quote_currency: bitbns_quote_currency} -> bitbns_quote_currency == "INR" end)
-    |> Enum.sort_by(fn x -> x.bid_difference end, &>=/2)
-  end
-
-  @doc """
-  Filters USDT - INR quoted coins from all results and sorts in descending order of ask_difference
-  """
-  def filter_usdt_inr_and_sort_by_ask_difference(results) do
-    results
-    |> Enum.filter(fn %{binance_quote_currency: binance_quote_currency} -> binance_quote_currency == "USDT" end)
-    |> Enum.filter(fn %{bitbns_quote_currency: bitbns_quote_currency} -> bitbns_quote_currency == "INR" end)
     |> Enum.sort_by(fn x -> x.ask_difference end, &>=/2)
   end
 

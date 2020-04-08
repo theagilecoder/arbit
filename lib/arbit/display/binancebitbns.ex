@@ -11,8 +11,8 @@ defmodule Arbit.Display.Binancebitbns do
 
   schema "binancebitbns" do
     field :coin,             :string
-    field :binance_quote_currency, :string
-    field :bitbns_quote_currency,  :string
+    field :binance_quote,    :string
+    field :bitbns_quote,     :string
     field :binance_price,    :float
     field :bitbns_bid_price, :float
     field :bitbns_ask_price, :float
@@ -108,8 +108,8 @@ defmodule Arbit.Display.Binancebitbns do
   defp create_binancebitbns_struct({binance_portfolio, bitbns_portfolio}) do
     %Binancebitbns{}
     |> struct(%{coin:             binance_portfolio.coin})
-    |> struct(%{binance_quote_currency: binance_portfolio.quote_currency})
-    |> struct(%{bitbns_quote_currency:  bitbns_portfolio.quote_currency})
+    |> struct(%{binance_quote:    binance_portfolio.quote_currency})
+    |> struct(%{bitbns_quote:     bitbns_portfolio.quote_currency})
     |> struct(%{binance_price:    binance_portfolio.price_usd})
     |> struct(%{bitbns_bid_price: bitbns_portfolio.bid_price_inr})
     |> struct(%{bid_difference:   compute_difference(binance_portfolio.price_inr, bitbns_portfolio.bid_price_inr)})

@@ -1,12 +1,13 @@
 <h1>Binance - BitBnS</h1>
 
-<!-- USDC - INR market table -->
+<!-- Table -->
 
-<h3>Binance USDC - BitBnS INR Bids</h3>
+<h3>Binance - BitBnS Bids</h3>
 <table>
   <thead>
     <tr>
       <th>Coin</th>
+      <th>Binance Quote</th>
       <th>Binance Price</th>
       <th>BitBnS Bid Price</th>
       <th>Difference</th>
@@ -15,9 +16,10 @@
   </thead>
 
   <tbody>
-    <%= for result <- filter_usdc_inr_and_sort_by_bid_difference(@results) do %>
+    <%= for result <- sort_by_bid_difference(@results) do %>
       <tr>
         <td><%= result.coin %></td>
+        <td><%= result.binance_quote %></td>
         <td><%= result.binance_price |> format_dollar() %></td>
         <td><%= result.bitbns_bid_price |> format_rupee() %></td>
         <td><%= result.bid_difference |> format_percentage %></td>
@@ -32,6 +34,7 @@
   <thead>
     <tr>
       <th>Coin</th>
+      <th>Binance Quote</th>
       <th>Binance Price</th>
       <th>BitBnS Ask Price</th>
       <th>Difference</th>
@@ -40,61 +43,10 @@
   </thead>
 
   <tbody>
-    <%= for result <- filter_usdc_inr_and_sort_by_ask_difference(@results) do %>
+    <%= for result <- sort_by_ask_difference(@results) do %>
       <tr>
         <td><%= result.coin %></td>
-        <td><%= result.binance_price |> format_dollar() %></td>
-        <td><%= result.bitbns_ask_price |> format_rupee() %></td>
-        <td><%= result.ask_difference |> format_percentage %></td>
-        <td><%= result.bitbns_volume |> format_coin_units() %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<!-- USDT - INR market table -->
-
-<h3>Binance USDT - BitBnS INR Bids</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Coin</th>
-      <th>Binance Price</th>
-      <th>BitBnS Bid Price</th>
-      <th>Difference</th>
-      <th>BitBnS Volume</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <%= for result <- filter_usdt_inr_and_sort_by_bid_difference(@results) do %>
-      <tr>
-        <td><%= result.coin %></td>
-        <td><%= result.binance_price |> format_dollar() %></td>
-        <td><%= result.bitbns_bid_price |> format_rupee() %></td>
-        <td><%= result.bid_difference |> format_percentage %></td>
-        <td><%= result.bitbns_volume |> format_coin_units() %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<h3>Binance USDT - BitBnS INR Asks</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Coin</th>
-      <th>Binance Price</th>
-      <th>BitBnS Ask Price</th>
-      <th>Difference</th>
-      <th>BitBnS Volume</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <%= for result <- filter_usdt_inr_and_sort_by_ask_difference(@results) do %>
-      <tr>
-        <td><%= result.coin %></td>
+        <td><%= result.binance_quote %></td>
         <td><%= result.binance_price |> format_dollar() %></td>
         <td><%= result.bitbns_ask_price |> format_rupee() %></td>
         <td><%= result.ask_difference |> format_percentage %></td>
