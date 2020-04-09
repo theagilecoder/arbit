@@ -11,7 +11,8 @@ defmodule Arbit.Display.Coinbasecoindcx do
 
   schema "coinbasecoindcx" do
     field :coin,              :string
-    field :quote_currency,    :string
+    field :coinbase_quote,    :string
+    field :coindcx_quote,     :string
     field :coinbase_price,    :float
     field :coindcx_bid_price, :float
     field :coindcx_ask_price, :float
@@ -27,15 +28,14 @@ defmodule Arbit.Display.Coinbasecoindcx do
   & return a list of %Coinbasecoindcx{} structs
   """
   def compute_arbitrage do
-    compute_arbitrage_inr_market() ++ compute_arbitrage_usdt_market()
-      ++ compute_arbitrage_tusd_market() ++ compute_arbitrage_usdc_market()
+    compute_arbitrage_usd_inr() ++ compute_arbitrage_usdc_inr()
   end
 
   @doc """
   Compute arbitrage between Coinbase USD coins & CoinDCX INR coins
   and return a list of %Coinbasecoindcx{} structs
   """
-  def compute_arbitrage_inr_market() do
+  def compute_arbitrage_usd_inr() do
     # Get Coinbase & CoinDCX portfolios
     coinbase_portfolio = Track.list_coinbase()
     coindcx_portfolio  = Track.list_coindcx()
@@ -60,73 +60,17 @@ defmodule Arbit.Display.Coinbasecoindcx do
   end
 
   @doc """
-  Compute arbitrage between Coinbase USD coins & CoinDCX USDT coins
+  Compute arbitrage between Coinbase USDC coins & CoinDCX INR coins
   and return a list of %Coinbasecoindcx{} structs
   """
-  def compute_arbitrage_usdt_market() do
+  def compute_arbitrage_usdc_inr() do
     # Get Coinbase & CoinDCX portfolios
     coinbase_portfolio = Track.list_coinbase()
     coindcx_portfolio  = Track.list_coindcx()
 
     # Filter in the coins belonging to the relevant market
-    coinbase_portfolio = filter_market(coinbase_portfolio, "USD")
-    coindcx_portfolio  = filter_market(coindcx_portfolio, "USDT")
-
-    # Filter in common coins in the two portfolios
-    coinbase_portfolio = filter_common_coins(coinbase_portfolio, coindcx_portfolio)
-    coindcx_portfolio  = filter_common_coins(coindcx_portfolio, coinbase_portfolio)
-
-    # Sort each portfolio by coin name
-    coinbase_portfolio = Enum.sort_by(coinbase_portfolio, &(&1.coin))
-    coindcx_portfolio  = Enum.sort_by(coindcx_portfolio,  &(&1.coin))
-
-    # Zip the two portfolios
-    zipped_portfolios = Enum.zip(coinbase_portfolio, coindcx_portfolio)
-
-    # Create %Coinbasecoindcx{} struct with difference %
-    Enum.map(zipped_portfolios, & create_coinbasecoindcx_struct(&1))
-  end
-
-  @doc """
-  Compute arbitrage between Coinbase USD coins & CoinDCX TUSD coins
-  and return a list of %Coinbasecoindcx{} structs
-  """
-  def compute_arbitrage_tusd_market() do
-    # Get Coinbase & CoinDCX portfolios
-    coinbase_portfolio = Track.list_coinbase()
-    coindcx_portfolio  = Track.list_coindcx()
-
-    # Filter in the coins belonging to the relevant market
-    coinbase_portfolio = filter_market(coinbase_portfolio, "USD")
-    coindcx_portfolio  = filter_market(coindcx_portfolio, "TUSD")
-
-    # Filter in common coins in the two portfolios
-    coinbase_portfolio = filter_common_coins(coinbase_portfolio, coindcx_portfolio)
-    coindcx_portfolio  = filter_common_coins(coindcx_portfolio, coinbase_portfolio)
-
-    # Sort each portfolio by coin name
-    coinbase_portfolio = Enum.sort_by(coinbase_portfolio, &(&1.coin))
-    coindcx_portfolio  = Enum.sort_by(coindcx_portfolio,  &(&1.coin))
-
-    # Zip the two portfolios
-    zipped_portfolios = Enum.zip(coinbase_portfolio, coindcx_portfolio)
-
-    # Create %Coinbasecoindcx{} struct with difference %
-    Enum.map(zipped_portfolios, & create_coinbasecoindcx_struct(&1))
-  end
-
-  @doc """
-  Compute arbitrage between Coinbase USD coins & CoinDCX USDC coins
-  and return a list of %Coinbasecoindcx{} structs
-  """
-  def compute_arbitrage_usdc_market() do
-    # Get Coinbase & CoinDCX portfolios
-    coinbase_portfolio = Track.list_coinbase()
-    coindcx_portfolio  = Track.list_coindcx()
-
-    # Filter in the coins belonging to the relevant market
-    coinbase_portfolio = filter_market(coinbase_portfolio, "USD")
-    coindcx_portfolio  = filter_market(coindcx_portfolio, "USDC")
+    coinbase_portfolio = filter_market(coinbase_portfolio, "USDC")
+    coindcx_portfolio  = filter_market(coindcx_portfolio, "INR")
 
     # Filter in common coins in the two portfolios
     coinbase_portfolio = filter_common_coins(coinbase_portfolio, coindcx_portfolio)
@@ -164,7 +108,8 @@ defmodule Arbit.Display.Coinbasecoindcx do
   defp create_coinbasecoindcx_struct({coinbase_portfolio, coindcx_portfolio}) do
     %Coinbasecoindcx{}
     |> struct(%{coin:              coinbase_portfolio.coin})
-    |> struct(%{quote_currency:    coindcx_portfolio.quote_currency})
+    |> struct(%{coinbase_quote:    coinbase_portfolio.quote_currency})
+    |> struct(%{coindcx_quote:     coindcx_portfolio.quote_currency})
     |> struct(%{coinbase_price:    coinbase_portfolio.price_usd})
     |> struct(%{coindcx_bid_price: coindcx_portfolio.bid_price_inr})
     |> struct(%{bid_difference:    compute_difference(coinbase_portfolio.price_inr, coindcx_portfolio.bid_price_inr)})

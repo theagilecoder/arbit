@@ -1,14 +1,12 @@
 <h1>Coinbase - CoinDCX</h1>
 
-<!-- INR market table -->
-
-<h3>INR Market @ CoinDCX [CoinDCX Bids]</h3>
+<h3>Coinbase - Coindcx Bids</h3>
 <table>
   <thead>
     <tr>
       <th>Coin</th>
-      <th>Quote</th>
-      <th>Coinbase Price</th> 
+      <th>Coinbase Quote</th>
+      <th>Coinbase Price</th>
       <th>CoinDCX Bid Price</th>
       <th>Difference</th>
       <th>CoinDCX Volume</th>
@@ -16,10 +14,10 @@
   </thead>
 
   <tbody>
-    <%= for result <- filter_inr_quotes_and_sort_by_bid_difference(@results) do %>
+    <%= for result <- sort_by_bid_difference(@results) do %>
       <tr>
         <td><%= result.coin %></td>
-        <td><%= result.quote_currency %></td>
+        <td><%= result.coinbase_quote %></td>
         <td><%= result.coinbase_price |> format_dollar() %></td>
         <td><%= result.coindcx_bid_price |> format_rupee() %></td>
         <td><%= result.bid_difference |> format_percentage %></td>
@@ -29,13 +27,13 @@
   </tbody>
 </table>
 
-<h3>INR Market @ CoinDCX [CoinDCX Asks]</h3>
+<h3>Coinbase - Coindcx Asks</h3>
 <table>
   <thead>
     <tr>
       <th>Coin</th>
-      <th>Quote</th>
-      <th>Coinbase Price</th> 
+      <th>Coinbase Quote</th>
+      <th>Coinbase Price</th>
       <th>CoinDCX Ask Price</th>
       <th>Difference</th>
       <th>CoinDCX Volume</th>
@@ -43,182 +41,14 @@
   </thead>
 
   <tbody>
-    <%= for result <- filter_inr_quotes_and_sort_by_ask_difference(@results) do %>
+    <%= for result <- sort_by_ask_difference(@results) do %>
       <tr>
         <td><%= result.coin %></td>
-        <td><%= result.quote_currency %></td>
+        <td><%= result.coinbase_quote %></td>
         <td><%= result.coinbase_price |> format_dollar() %></td>
         <td><%= result.coindcx_ask_price |> format_rupee() %></td>
         <td><%= result.ask_difference |> format_percentage %></td>
         <td><%= result.coindcx_volume |> format_rupee() %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<!-- USDT market table -->
-
-<h3>USDT Market @ CoinDCX [CoinDCX Bids]</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Coin</th>
-      <th>Quote</th>
-      <th>Coinbase Price</th> 
-      <th>CoinDCX Bid Price</th>
-      <th>Difference</th>
-      <th>CoinDCX Volume</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <%= for result <- filter_usdt_quotes_and_sort_by_bid_difference(@results) do %>
-      <tr>
-        <td><%= result.coin %></td>
-        <td><%= result.quote_currency %></td>
-        <td><%= result.coinbase_price |> format_dollar %></td>
-        <td><%= result.coindcx_bid_price |> format_rupee %></td>
-        <td><%= result.bid_difference |> format_percentage %></td>
-        <td><%= result.coindcx_volume |> format_dollar %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<h3>USDT Market @ CoinDCX [CoinDCX Asks]</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Coin</th>
-      <th>Quote</th>
-      <th>Coinbase Price</th> 
-      <th>CoinDCX Ask Price</th>
-      <th>Difference</th>
-      <th>CoinDCX Volume</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <%= for result <- filter_usdt_quotes_and_sort_by_ask_difference(@results) do %>
-      <tr>
-        <td><%= result.coin %></td>
-        <td><%= result.quote_currency %></td>
-        <td><%= result.coinbase_price |> format_dollar %></td>
-        <td><%= result.coindcx_ask_price |> format_rupee %></td>
-        <td><%= result.ask_difference |> format_percentage %></td>
-        <td><%= result.coindcx_volume |> format_dollar %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<!-- TUSD market table -->
-
-<h3>TUSD Market @ CoinDCX [CoinDCX Bids]</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Coin</th>
-      <th>Quote</th>
-      <th>Coinbase Price</th> 
-      <th>CoinDCX Bid Price</th>
-      <th>Difference</th>
-      <th>CoinDCX Volume</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <%= for result <- filter_tusd_quotes_and_sort_by_bid_difference(@results) do %>
-      <tr>
-        <td><%= result.coin %></td>
-        <td><%= result.quote_currency %></td>
-        <td><%= result.coinbase_price |> format_dollar %></td>
-        <td><%= result.coindcx_bid_price |> format_rupee %></td>
-        <td><%= result.bid_difference |> format_percentage %></td>
-        <td><%= result.coindcx_volume |> format_dollar %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<h3>TUSD Market @ CoinDCX [CoinDCX Asks]</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Coin</th>
-      <th>Quote</th>
-      <th>Coinbase Price</th> 
-      <th>CoinDCX Ask Price</th>
-      <th>Difference</th>
-      <th>CoinDCX Volume</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <%= for result <- filter_tusd_quotes_and_sort_by_ask_difference(@results) do %>
-      <tr>
-        <td><%= result.coin %></td>
-        <td><%= result.quote_currency %></td>
-        <td><%= result.coinbase_price |> format_dollar %></td>
-        <td><%= result.coindcx_ask_price |> format_rupee %></td>
-        <td><%= result.ask_difference |> format_percentage %></td>
-        <td><%= result.coindcx_volume |> format_dollar %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<!-- USDC market table -->
-
-<h3>USDC Market @ CoinDCX [CoinDCX Bids]</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Coin</th>
-      <th>Quote</th>
-      <th>Coinbase Price</th> 
-      <th>CoinDCX Bid Price</th>
-      <th>Difference</th>
-      <th>CoinDCX Volume</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <%= for result <- filter_usdc_quotes_and_sort_by_bid_difference(@results) do %>
-      <tr>
-        <td><%= result.coin %></td>
-        <td><%= result.quote_currency %></td>
-        <td><%= result.coinbase_price |> format_dollar %></td>
-        <td><%= result.coindcx_bid_price |> format_rupee %></td>
-        <td><%= result.bid_difference |> format_percentage %></td>
-        <td><%= result.coindcx_volume |> format_dollar %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<h3>USDC Market @ CoinDCX [CoinDCX Asks]</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Coin</th>
-      <th>Quote</th>
-      <th>Coinbase Price</th> 
-      <th>CoinDCX Ask Price</th>
-      <th>Difference</th>
-      <th>CoinDCX Volume</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <%= for result <- filter_usdc_quotes_and_sort_by_ask_difference(@results) do %>
-      <tr>
-        <td><%= result.coin %></td>
-        <td><%= result.quote_currency %></td>
-        <td><%= result.coinbase_price |> format_dollar %></td>
-        <td><%= result.coindcx_ask_price |> format_rupee %></td>
-        <td><%= result.ask_difference |> format_percentage %></td>
-        <td><%= result.coindcx_volume |> format_dollar %></td>
       </tr>
     <% end %>
   </tbody>
