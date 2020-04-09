@@ -11,7 +11,8 @@ defmodule Arbit.Display.Coinbasebitbns do
 
   schema "coinbasebitbns" do
     field :coin,             :string
-    field :quote_currency,   :string
+    field :coinbase_quote,   :string
+    field :bitbns_quote,     :string
     field :coinbase_price,   :float
     field :bitbns_bid_price, :float
     field :bitbns_ask_price, :float
@@ -27,14 +28,14 @@ defmodule Arbit.Display.Coinbasebitbns do
   & return a list of %Coinbasebitbns{} structs
   """
   def compute_arbitrage do
-    compute_arbitrage_inr_market() ++ compute_arbitrage_usdt_market()
+    compute_arbitrage_usd_inr() ++ compute_arbitrage_usdc_inr()
   end
 
   @doc """
   Compute arbitrage between Coinbase USD coins & Bitbns INR coins
   and return a list of %Coinbasebitbns{} structs
   """
-  def compute_arbitrage_inr_market() do
+  def compute_arbitrage_usd_inr() do
     # Get Coinbase & Bitbns portfolios
     coinbase_portfolio = Track.list_coinbase()
     bitbns_portfolio   = Track.list_bitbns()
@@ -59,17 +60,17 @@ defmodule Arbit.Display.Coinbasebitbns do
   end
 
   @doc """
-  Compute arbitrage between Coinbase USD coins & Bitbns USDT coins
+  Compute arbitrage between Coinbase USDC coins & Bitbns INR coins
   and return a list of %Coinbasebitbns{} structs
   """
-  def compute_arbitrage_usdt_market() do
+  def compute_arbitrage_usdc_inr() do
     # Get Coinbase & Bitbns portfolios
     coinbase_portfolio = Track.list_coinbase()
     bitbns_portfolio   = Track.list_bitbns()
 
     # Filter in the coins belonging to the relevant market
-    coinbase_portfolio = filter_market(coinbase_portfolio, "USD")
-    bitbns_portfolio   = filter_market(bitbns_portfolio,  "USDT")
+    coinbase_portfolio = filter_market(coinbase_portfolio, "USDC")
+    bitbns_portfolio   = filter_market(bitbns_portfolio, "INR")
 
     # Filter in common coins in the two portfolios
     coinbase_portfolio = filter_common_coins(coinbase_portfolio, bitbns_portfolio)
@@ -107,7 +108,8 @@ defmodule Arbit.Display.Coinbasebitbns do
   defp create_coinbasebitbns_struct({coinbase_portfolio, bitbns_portfolio}) do
     %Coinbasebitbns{}
     |> struct(%{coin:             coinbase_portfolio.coin})
-    |> struct(%{quote_currency:   bitbns_portfolio.quote_currency})
+    |> struct(%{coinbase_quote:   coinbase_portfolio.quote_currency})
+    |> struct(%{bitbns_quote:     bitbns_portfolio.quote_currency})
     |> struct(%{coinbase_price:   coinbase_portfolio.price_usd})
     |> struct(%{bitbns_bid_price: bitbns_portfolio.bid_price_inr})
     |> struct(%{bid_difference:   compute_difference(coinbase_portfolio.price_inr, bitbns_portfolio.bid_price_inr)})

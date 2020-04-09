@@ -4,7 +4,8 @@ defmodule Arbit.Repo.Migrations.CreateCoinbasebitbns do
   def change do
     create table(:coinbasebitbns) do
       add :coin,             :string
-      add :quote_currency,   :string
+      add :coinbase_quote,   :string
+      add :bitbns_quote,     :string
       add :coinbase_price,   :float
       add :bitbns_bid_price, :float
       add :bitbns_ask_price, :float
@@ -15,6 +16,6 @@ defmodule Arbit.Repo.Migrations.CreateCoinbasebitbns do
       timestamps()
     end
 
-    create unique_index(:coinbasebitbns, [:coin, :quote_currency])
+    create unique_index(:coinbasebitbns, [:coin, :coinbase_quote, :bitbns_quote])
   end
 end

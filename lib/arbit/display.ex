@@ -20,7 +20,7 @@ defmodule Arbit.Display do
     Coinbasebitbns.compute_arbitrage()
     |> Task.async_stream(&Repo.insert(&1,
         on_conflict: {:replace, [:coinbase_price, :bitbns_bid_price, :bitbns_ask_price, :bitbns_volume, :bid_difference, :ask_difference, :updated_at]},
-        conflict_target: [:coin, :quote_currency]))
+        conflict_target: [:coin, :coinbase_quote, :bitbns_quote]))
     |> Enum.map(fn {:ok, result} -> result end)
   end
 
