@@ -11,7 +11,8 @@ defmodule Arbit.Display.Coinbasewazirx do
 
   schema "coinbasewazirx" do
     field :coin,             :string
-    field :quote_currency,   :string
+    field :coinbase_quote,   :string
+    field :wazirx_quote,     :string
     field :coinbase_price,   :float
     field :wazirx_bid_price, :float
     field :wazirx_ask_price, :float
@@ -27,14 +28,14 @@ defmodule Arbit.Display.Coinbasewazirx do
   & return a list of %Coinbasewazirx{} structs
   """
   def compute_arbitrage do
-    compute_arbitrage_inr_market() ++ compute_arbitrage_usdt_market()
+    compute_arbitrage_usd_inr() ++ compute_arbitrage_usdc_inr()
   end
 
   @doc """
   Compute arbitrage between Coinbase USD coins & WazirX INR coins
   and return a list of %Coinbasewazirx{} structs
   """
-  def compute_arbitrage_inr_market() do
+  def compute_arbitrage_usd_inr() do
     # Get Coinbase & Wazirx portfolios
     coinbase_portfolio = Track.list_coinbase()
     wazirx_portfolio   = Track.list_wazirx()
@@ -59,17 +60,17 @@ defmodule Arbit.Display.Coinbasewazirx do
   end
 
   @doc """
-  Compute arbitrage between Coinbase USD coins & WazirX USDT coins
+  Compute arbitrage between Coinbase USDC coins & WazirX INR coins
   and return a list of %Coinbasewazirx{} structs
   """
-  def compute_arbitrage_usdt_market() do
+  def compute_arbitrage_usdc_inr() do
     # Get Coinbase & WazirX portfolios
     coinbase_portfolio = Track.list_coinbase()
     wazirx_portfolio   = Track.list_wazirx()
 
     # Filter in the coins belonging to the relevant market
-    coinbase_portfolio = filter_market(coinbase_portfolio, "USD")
-    wazirx_portfolio   = filter_market(wazirx_portfolio,  "USDT")
+    coinbase_portfolio = filter_market(coinbase_portfolio, "USDC")
+    wazirx_portfolio   = filter_market(wazirx_portfolio, "INR")
 
     # Filter in common coins in the two portfolios
     coinbase_portfolio = filter_common_coins(coinbase_portfolio, wazirx_portfolio)
@@ -107,7 +108,8 @@ defmodule Arbit.Display.Coinbasewazirx do
   defp create_coinbasewazirx_struct({coinbase_portfolio, wazirx_portfolio}) do
     %Coinbasewazirx{}
     |> struct(%{coin:             coinbase_portfolio.coin})
-    |> struct(%{quote_currency:   wazirx_portfolio.quote_currency})
+    |> struct(%{coinbase_quote:   coinbase_portfolio.quote_currency})
+    |> struct(%{wazirx_quote:     wazirx_portfolio.quote_currency})
     |> struct(%{coinbase_price:   coinbase_portfolio.price_usd})
     |> struct(%{wazirx_bid_price: wazirx_portfolio.bid_price_inr})
     |> struct(%{bid_difference:   compute_difference(coinbase_portfolio.price_inr, wazirx_portfolio.bid_price_inr)})

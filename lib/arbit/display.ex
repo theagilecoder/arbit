@@ -40,7 +40,7 @@ defmodule Arbit.Display do
     Coinbasewazirx.compute_arbitrage()
     |> Task.async_stream(&Repo.insert(&1,
         on_conflict: {:replace, [:coinbase_price, :wazirx_bid_price, :wazirx_ask_price, :wazirx_volume, :bid_difference, :ask_difference, :updated_at]},
-        conflict_target: [:coin, :quote_currency]))
+        conflict_target: [:coin, :coinbase_quote, :wazirx_quote]))
     |> Enum.map(fn {:ok, result} -> result end)
   end
 

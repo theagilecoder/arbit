@@ -1,14 +1,12 @@
 <h1>Coinbase - WazirX</h1>
 
-<!-- INR market table -->
-
-<h3>INR Market @ WazirX [WazirX Bids]</h3>
+<h3>Coinbase - WazirX Bids</h3>
 <table>
   <thead>
     <tr>
       <th>Coin</th>
-      <th>Quote</th>
-      <th>Coinbase Price</th> 
+      <th>Coinbase Quote</th>
+      <th>Coinbase Price</th>
       <th>WazirX Bid Price</th>
       <th>Difference</th>
       <th>WazirX Volume</th>
@@ -16,10 +14,10 @@
   </thead>
 
   <tbody>
-    <%= for result <- filter_inr_quotes_and_sort_by_bid_difference(@results) do %>
+    <%= for result <- sort_by_bid_difference(@results) do %>
       <tr>
         <td><%= result.coin %></td>
-        <td><%= result.quote_currency %></td>
+        <td><%= result.coinbase_quote %></td>
         <td><%= result.coinbase_price |> format_dollar() %></td>
         <td><%= result.wazirx_bid_price |> format_rupee() %></td>
         <td><%= result.bid_difference |> format_percentage %></td>
@@ -29,13 +27,13 @@
   </tbody>
 </table>
 
-<h3>INR Market @ WazirX [WazirX Asks]</h3>
+<h3>Coinbase - WazirX Asks</h3>
 <table>
   <thead>
     <tr>
       <th>Coin</th>
-      <th>Quote</th>
-      <th>Coinbase Price</th> 
+      <th>Coinbase Quote</th>
+      <th>Coinbase Price</th>
       <th>WazirX Ask Price</th>
       <th>Difference</th>
       <th>WazirX Volume</th>
@@ -43,70 +41,14 @@
   </thead>
 
   <tbody>
-    <%= for result <- filter_inr_quotes_and_sort_by_ask_difference(@results) do %>
+    <%= for result <- sort_by_ask_difference(@results) do %>
       <tr>
         <td><%= result.coin %></td>
-        <td><%= result.quote_currency %></td>
+        <td><%= result.coinbase_quote %></td>
         <td><%= result.coinbase_price |> format_dollar() %></td>
         <td><%= result.wazirx_ask_price |> format_rupee() %></td>
         <td><%= result.ask_difference |> format_percentage %></td>
         <td><%= result.wazirx_volume |> format_coin_units() %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<!-- USDT market table -->
-
-<h3>USDT Market @ WazirX [WazirX Bids]</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Coin</th>
-      <th>Quote</th>
-      <th>Coinbase Price</th> 
-      <th>WazirX Bid Price</th>
-      <th>Difference</th>
-      <th>WazirX Volume</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <%= for result <- filter_usdt_quotes_and_sort_by_bid_difference(@results) do %>
-      <tr>
-        <td><%= result.coin %></td>
-        <td><%= result.quote_currency %></td>
-        <td><%= result.coinbase_price |> format_dollar %></td>
-        <td><%= result.wazirx_bid_price |> format_rupee %></td>
-        <td><%= result.bid_difference |> format_percentage %></td>
-        <td><%= result.wazirx_volume |> format_coin_units %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<h3>USDT Market @ WazirX [WazirX Asks]</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Coin</th>
-      <th>Quote</th>
-      <th>Coinbase Price</th> 
-      <th>WazirX Ask Price</th>
-      <th>Difference</th>
-      <th>WazirX Volume</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <%= for result <- filter_usdt_quotes_and_sort_by_bid_difference(@results) do %>
-      <tr>
-        <td><%= result.coin %></td>
-        <td><%= result.quote_currency %></td>
-        <td><%= result.coinbase_price |> format_dollar %></td>
-        <td><%= result.wazirx_ask_price |> format_rupee %></td>
-        <td><%= result.ask_difference |> format_percentage %></td>
-        <td><%= result.wazirx_volume |> format_coin_units %></td>
       </tr>
     <% end %>
   </tbody>

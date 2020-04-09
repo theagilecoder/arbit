@@ -4,7 +4,8 @@ defmodule Arbit.Repo.Migrations.CreateCoinbasewazirx do
   def change do
     create table(:coinbasewazirx) do
       add :coin,             :string
-      add :quote_currency,   :string
+      add :coinbase_quote,   :string
+      add :wazirx_quote,     :string
       add :coinbase_price,   :float
       add :wazirx_bid_price, :float
       add :wazirx_ask_price, :float
@@ -15,6 +16,6 @@ defmodule Arbit.Repo.Migrations.CreateCoinbasewazirx do
       timestamps()
     end
 
-    create unique_index(:coinbasewazirx, [:coin, :quote_currency])
+    create unique_index(:coinbasewazirx, [:coin, :coinbase_quote, :wazirx_quote])
   end
 end
