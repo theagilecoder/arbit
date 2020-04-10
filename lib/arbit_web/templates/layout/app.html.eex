@@ -29,6 +29,8 @@
         <% end %>
       </header>
       <nav>
+        <a href="/dashboard">Dashboard</a>
+        <hr>
         <a href="/coinbasebitbns">Coinbase - BitBnS</a>
         <a href="/coinbasewazirx">Coinbase - WazirX</a>
         <a href="/coinbasecoindcx">Coinbase - CoinDCX</a>

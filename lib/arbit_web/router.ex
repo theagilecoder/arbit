@@ -35,6 +35,7 @@ defmodule ArbitWeb.Router do
     get "/coinbasecoindcx", CoinbasecoindcxController, :index
     get "/coinbasezebpay", CoinbasezebpayController, :index
     get "/binancebitbns", BinancebitbnsController, :index
+    get "/dashboard", DashboardController, :index
   end
 
   # Other scopes may use custom stacks.

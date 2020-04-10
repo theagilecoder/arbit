@@ -1,0 +1,72 @@
+<h1>Dashboard</h1>
+
+<h3>Best USA to India Deals</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Coin</th>
+      <th>Ex1</th>
+      <th>Ex1 Quote</th>
+      <th>Ex1 Price</th>
+      <th>Ex2</th>
+      <th>Ex2 Quote</th>
+      <th>Ex2 Bid Price</th>
+      <th>Difference</th>
+      <th>Ex2 Volume</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <%= for result <- sort_by_bid_difference(@results) do %>
+      <tr>
+        <td><%= result.coin %></td>
+        <td><%= result.ex1 %></td>
+        <td><%= result.ex1_quote %></td>
+        <td><%= result.ex1_price |> format_dollar() %></td>
+        <td><%= result.ex2 %></td>
+        <td><%= result.ex2_quote %></td>
+        <td><%= result.ex2_bid_price |> format_rupee() %></td>
+        <td><%= result.bid_difference |> format_percentage %></td>
+        <td><%= result.ex2_volume |> format_coin_units() %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h3>Best India to USA Deals</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Coin</th>
+      <th>Ex1</th>
+      <th>Ex1 Quote</th>
+      <th>Ex1 Price</th>
+      <th>Ex2</th>
+      <th>Ex2 Quote</th>
+      <th>Ex2 Ask Price</th>
+      <th>Difference</th>
+      <th>Ex2 Volume</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <%= for result <- sort_by_ask_difference(@results) do %>
+      <tr>
+        <td><%= result.coin %></td>
+        <td><%= result.ex1 %></td>
+        <td><%= result.ex1_quote %></td>
+        <td><%= result.ex1_price |> format_dollar() %></td>
+        <td><%= result.ex2 %></td>
+        <td><%= result.ex2_quote %></td>
+        <td><%= result.ex2_ask_price |> format_rupee() %></td>
+        <td><%= result.ask_difference |> format_percentage %></td>
+        <td><%= result.ex2_volume |> format_coin_units() %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<ul>
+  <li>* Last updated at IST Time <%= ist_time(@results) %></li>
+  <li>* Percentages are calculated over the 1st exchange</li>
+</ul>
