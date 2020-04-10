@@ -7,7 +7,7 @@ defmodule Arbit.Display do
 
   import Ecto.Query, warn: false
   alias Arbit.Repo
-  alias Arbit.Display.{Coinbasebitbns, Coinbasewazirx, Coinbasecoindcx, Coinbasezebpay, Binancebitbns}
+  alias Arbit.Display.{Coinbasebitbns, Coinbasewazirx, Coinbasecoindcx, Coinbasezebpay, Binancebitbns, Dashboard}
 
   #-------------------#
   # Coinbase - Bitbns #
@@ -25,7 +25,7 @@ defmodule Arbit.Display do
   end
 
   @doc """
-    Display all results
+    Display all results from coinbasebitbns table
   """
   def list_coinbasebitbns, do: Repo.all(Coinbasebitbns)
 
@@ -45,7 +45,7 @@ defmodule Arbit.Display do
   end
 
   @doc """
-    Display all results
+    Display all results in coinbasewazirx table
   """
   def list_coinbasewazirx, do: Repo.all(Coinbasewazirx)
 
@@ -65,7 +65,7 @@ defmodule Arbit.Display do
   end
 
   @doc """
-    Display all results
+    Display all results in coinbasecoindcx table
   """
   def list_coinbasecoindcx, do: Repo.all(Coinbasecoindcx)
 
@@ -85,7 +85,7 @@ defmodule Arbit.Display do
   end
 
   @doc """
-    Display all results
+    Display all results in coinbasezebpay table
   """
   def list_coinbasezebpay, do: Repo.all(Coinbasezebpay)
 
@@ -105,7 +105,29 @@ defmodule Arbit.Display do
   end
 
   @doc """
-    Display all results
+    Display all results in binancebitbns table
   """
   def list_binancebitbns, do: Repo.all(Binancebitbns)
+
+  #-----------#
+  # Dashboard #
+  #-----------#
+
+  @doc """
+  Inserts in dashboard table
+  """
+  def insert_dashboard do
+    # Delete all records from dashboard table
+    Repo.delete_all(Dashboard)
+
+    # Parallely insert all results in dashboard table
+    Dashboard.collect_all_results()
+    |> Task.async_stream(&Repo.insert(&1))
+    |> Enum.map(fn {:ok, result} -> result end)
+  end
+
+  @doc """
+    Display all results in dashboard table
+  """
+  def list_dashboard, do: Repo.all(Dashboard)
 end
