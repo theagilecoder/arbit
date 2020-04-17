@@ -17,11 +17,8 @@ defmodule Arbit.Display do
   Upserts results in coinbasebitbns table
   """
   def upsert_coinbasebitbns do
-    Coinbasebitbns.compute_arbitrage()
-    |> Task.async_stream(&Repo.insert(&1,
-        on_conflict: {:replace, [:coinbase_price, :bitbns_bid_price, :bitbns_ask_price, :bitbns_volume, :bid_difference, :ask_difference, :updated_at]},
-        conflict_target: [:coin, :coinbase_quote, :bitbns_quote]))
-    |> Enum.map(fn {:ok, result} -> result end)
+    Repo.delete_all(Coinbasebitbns)
+    Repo.insert_all(Coinbasebitbns, Coinbasebitbns.compute_arbitrage() |> prepare_for_insert_all())
   end
 
   @doc """
@@ -37,11 +34,8 @@ defmodule Arbit.Display do
   Upserts results in coinbasewazirx table
   """
   def upsert_coinbasewazirx do
-    Coinbasewazirx.compute_arbitrage()
-    |> Task.async_stream(&Repo.insert(&1,
-        on_conflict: {:replace, [:coinbase_price, :wazirx_bid_price, :wazirx_ask_price, :wazirx_volume, :bid_difference, :ask_difference, :updated_at]},
-        conflict_target: [:coin, :coinbase_quote, :wazirx_quote]))
-    |> Enum.map(fn {:ok, result} -> result end)
+    Repo.delete_all(Coinbasewazirx)
+    Repo.insert_all(Coinbasewazirx, Coinbasewazirx.compute_arbitrage() |> prepare_for_insert_all())
   end
 
   @doc """
@@ -57,11 +51,8 @@ defmodule Arbit.Display do
   Upserts results in coinbasecoindcx table
   """
   def upsert_coinbasecoindcx do
-    Coinbasecoindcx.compute_arbitrage()
-    |> Task.async_stream(&Repo.insert(&1,
-        on_conflict: {:replace, [:coinbase_price, :coindcx_bid_price, :coindcx_ask_price, :coindcx_volume, :bid_difference, :ask_difference, :updated_at]},
-        conflict_target: [:coin, :coindcx_quote, :coinbase_quote]))
-    |> Enum.map(fn {:ok, result} -> result end)
+    Repo.delete_all(Coinbasecoindcx)
+    Repo.insert_all(Coinbasecoindcx, Coinbasecoindcx.compute_arbitrage() |> prepare_for_insert_all())
   end
 
   @doc """
@@ -77,11 +68,8 @@ defmodule Arbit.Display do
   Upserts results in coinbasezebpay table
   """
   def upsert_coinbasezebpay do
-    Coinbasezebpay.compute_arbitrage()
-    |> Task.async_stream(&Repo.insert(&1,
-        on_conflict: {:replace, [:coinbase_price, :zebpay_bid_price, :zebpay_ask_price, :zebpay_volume, :bid_difference, :ask_difference, :updated_at]},
-        conflict_target: [:coin, :zebpay_quote, :coinbase_quote]))
-    |> Enum.map(fn {:ok, result} -> result end)
+    Repo.delete_all(Coinbasezebpay)
+    Repo.insert_all(Coinbasezebpay, Coinbasezebpay.compute_arbitrage() |> prepare_for_insert_all())
   end
 
   @doc """
@@ -97,11 +85,8 @@ defmodule Arbit.Display do
   Upserts results in binancebitbns table
   """
   def upsert_binancebitbns do
-    Binancebitbns.compute_arbitrage()
-    |> Task.async_stream(&Repo.insert(&1,
-        on_conflict: {:replace, [:binance_price, :bitbns_bid_price, :bitbns_ask_price, :bitbns_volume, :bid_difference, :ask_difference, :updated_at]},
-        conflict_target: [:coin, :binance_quote, :bitbns_quote]))
-    |> Enum.map(fn {:ok, result} -> result end)
+    Repo.delete_all(Binancebitbns)
+    Repo.insert_all(Binancebitbns, Binancebitbns.compute_arbitrage() |> prepare_for_insert_all())
   end
 
   @doc """
@@ -114,20 +99,35 @@ defmodule Arbit.Display do
   #-----------#
 
   @doc """
-  Inserts in dashboard table
+  Upserts in dashboard table
   """
-  def insert_dashboard do
-    # Delete all records from dashboard table
+  def upsert_dashboard do
     Repo.delete_all(Dashboard)
-
-    # Parallely insert all results in dashboard table
-    Dashboard.collect_all_results()
-    |> Task.async_stream(&Repo.insert(&1))
-    |> Enum.map(fn {:ok, result} -> result end)
+    Repo.insert_all(Dashboard, Dashboard.collect_all_results() |> prepare_for_insert_all())
   end
 
   @doc """
     Display all results in dashboard table
   """
   def list_dashboard, do: Repo.all(Dashboard)
+
+  #---------#
+  # Helpers #
+  #---------#
+
+  @doc """
+  Receives a list of schema structs where each struct is a coin pair
+  and returns a list of maps where each map is a sanitized coin pair
+  """
+  def prepare_for_insert_all(list_of_structs) do
+    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+
+    list_of_structs
+    |> Enum.map(fn x ->
+      x
+      |> Map.from_struct()
+      |> Map.drop([:__meta__, :id])
+      |> Map.merge(%{inserted_at: now, updated_at: now})
+    end)
+  end
 end
