@@ -30,6 +30,7 @@ defmodule Arbit.Track.Wazirx do
     conversion_amount = Track.get_conversion_amount("USD-INR")
 
     product_list()
+    |> filter_relevant_pairs()
     |> Enum.map(&create_wazirx_struct/1)
     |> Enum.map(&fill_blank_bid_price_inr(&1, conversion_amount))
     |> Enum.map(&fill_blank_bid_price_usd(&1, conversion_amount))
@@ -48,6 +49,14 @@ defmodule Arbit.Track.Wazirx do
     "https://api.wazirx.com/api/v2/tickers"
   end
 
+  # Track only INR pairs and ignore BTC and USDT pairs
+  # Accepts a list of coin pairs where each pair is a map
+  # Returns a list of coin pairs
+  defp filter_relevant_pairs(pairs) do
+    pairs
+    |> Enum.filter(fn {_key, value} -> value.quote_unit in ["inr"] end)
+  end
+
   # Given a map, Create a %Wazirx{} struct
   defp create_wazirx_struct({_key, value}) do
     %Wazirx{}
@@ -55,11 +64,11 @@ defmodule Arbit.Track.Wazirx do
     |> struct(%{quote_currency: value.quote_unit |> String.upcase()})
     |> struct(%{volume:         value.volume |> Float.parse() |> elem(0)})
     |> struct(%{bid_price_inr: (if value.quote_unit == "inr",  do: value.buy  |> Float.parse() |> elem(0), else: nil)})
-    |> struct(%{bid_price_btc: (if value.quote_unit == "btc",  do: value.buy  |> Float.parse() |> elem(0), else: nil)})
-    |> struct(%{bid_price_usd: (if value.quote_unit == "usdt", do: value.buy  |> Float.parse() |> elem(0), else: nil)})
+    # |> struct(%{bid_price_btc: (if value.quote_unit == "btc",  do: value.buy  |> Float.parse() |> elem(0), else: nil)})
+    # |> struct(%{bid_price_usd: (if value.quote_unit == "usdt", do: value.buy  |> Float.parse() |> elem(0), else: nil)})
     |> struct(%{ask_price_inr: (if value.quote_unit == "inr",  do: value.sell |> Float.parse() |> elem(0), else: nil)})
-    |> struct(%{ask_price_btc: (if value.quote_unit == "btc",  do: value.sell |> Float.parse() |> elem(0), else: nil)})
-    |> struct(%{ask_price_usd: (if value.quote_unit == "usdt", do: value.sell |> Float.parse() |> elem(0), else: nil)})
+    # |> struct(%{ask_price_btc: (if value.quote_unit == "btc",  do: value.sell |> Float.parse() |> elem(0), else: nil)})
+    # |> struct(%{ask_price_usd: (if value.quote_unit == "usdt", do: value.sell |> Float.parse() |> elem(0), else: nil)})
   end
 
   defp fill_blank_bid_price_inr(%Wazirx{bid_price_usd: bid_price_usd} = coin, conversion_amount) do

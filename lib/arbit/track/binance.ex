@@ -1,7 +1,7 @@
 defmodule Arbit.Track.Binance do
   @moduledoc """
   This module calls Binance tracker API and prepares list of %Binance{} structs
-  Currently tracking USDT, USDC and BTC pairs
+  Currently tracking USDT, USDC pairs
   """
 
   use Ecto.Schema

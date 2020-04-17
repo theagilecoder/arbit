@@ -26,6 +26,7 @@ defmodule Arbit.Track.Bitbns do
     conversion_amount = Track.get_conversion_amount("USD-INR")
 
     product_list()
+    |> filter_relevant_pairs()
     |> Enum.map(&create_bitbns_struct/1)
     |> Enum.map(&fill_blank_bid_price_usd(&1, conversion_amount))
     |> Enum.map(&fill_blank_bid_price_inr(&1, conversion_amount))
@@ -41,6 +42,14 @@ defmodule Arbit.Track.Bitbns do
 
   defp url do
     "https://bitbns.com/order/getTickerWithVolume/"
+  end
+
+  # Track only INR pairs and ignore USDT pairs
+  # Accepts a list of coin pairs where each pair is a map
+  # Returns a list of coin pairs
+  defp filter_relevant_pairs(pairs) do
+    pairs
+    |> Enum.filter(fn {key, _value} -> detect_quote_currency(key) in ["INR"] end)
   end
 
   defp create_bitbns_struct({key, value}) do

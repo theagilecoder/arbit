@@ -29,6 +29,7 @@ defmodule Arbit.Track.Coindcx do
 
     product_list()
     |> remove_bad_entries()
+    |> filter_relevant_pairs()
     |> Enum.map(&create_coindcx_struct/1)
     |> Enum.map(&fill_blank_bid_price_usd(&1, conversion_amount))
     |> Enum.map(&fill_blank_bid_price_inr(&1, conversion_amount))
@@ -54,6 +55,14 @@ defmodule Arbit.Track.Coindcx do
     |> Enum.reject(fn x -> x.ask == nil end)
     |> Enum.reject(fn x -> String.contains?(x.bid, "e") end)
     |> Enum.reject(fn x -> String.contains?(x.ask, "e") end)
+  end
+
+  # Track only INR pairs and ignore other pairs
+  # Accepts a list of coin pairs where each pair is a map
+  # Returns a list of coin pairs
+  defp filter_relevant_pairs(pairs) do
+    pairs
+    |> Enum.filter(fn pair -> detect_quote_currency(pair.market) in ["INR"] end)
   end
 
   # Convert a map to a %Coindcx{} struct

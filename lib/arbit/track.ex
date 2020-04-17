@@ -32,14 +32,11 @@ defmodule Arbit.Track do
   #----------#
 
   @doc """
-  Parallely upsert each %Coinbase{} struct in Coinbase table
+  Insert each %Coinbase{} struct in Coinbase table
   """
   def upsert_coinbase_portfolio() do
-    Coinbase.fetch_portfolio()
-    |> Task.async_stream(&Repo.insert(&1,
-        on_conflict: {:replace, [:price_usd, :price_inr, :price_btc, :updated_at]},
-        conflict_target: [:coin, :quote_currency]))
-    |> Enum.map(fn {:ok, result} -> result end)
+    Repo.delete_all(Coinbase)
+    Repo.insert_all(Coinbase, Coinbase.fetch_portfolio() |> prepare_for_insert_all())
   end
 
   @doc """
@@ -52,14 +49,11 @@ defmodule Arbit.Track do
   #--------#
 
   @doc """
-  Parallely upsert each %Bitbns{} struct in Bitbns table
+  Insert each %Bitbns{} struct in Bitbns table
   """
   def upsert_bitbns_portfolio() do
-    Bitbns.fetch_portfolio()
-    |> Task.async_stream(&Repo.insert(&1,
-    on_conflict: {:replace, [:bid_price_usd, :bid_price_inr, :ask_price_usd, :ask_price_inr, :volume, :updated_at]},
-    conflict_target: [:coin, :quote_currency]))
-    |> Enum.map(fn {:ok, result} -> result end)
+    Repo.delete_all(Bitbns)
+    Repo.insert_all(Bitbns, Bitbns.fetch_portfolio() |> prepare_for_insert_all())
   end
 
   @doc """
@@ -72,14 +66,11 @@ defmodule Arbit.Track do
   #--------#
 
   @doc """
-  Parallely upsert each %Wazirx{} struct in Wazirx table
+  Insert each %Wazirx{} struct in Wazirx table
   """
   def upsert_wazirx_portfolio() do
-    Wazirx.fetch_portfolio()
-    |> Task.async_stream(&Repo.insert(&1,
-        on_conflict: {:replace, [:bid_price_usd, :bid_price_inr, :bid_price_btc, :ask_price_usd, :ask_price_inr, :ask_price_btc, :volume, :updated_at]},
-        conflict_target: [:coin, :quote_currency]))
-    |> Enum.map(fn {:ok, result} -> result end)
+    Repo.delete_all(Wazirx)
+    Repo.insert_all(Wazirx, Wazirx.fetch_portfolio() |> prepare_for_insert_all())
   end
 
   @doc """
@@ -92,14 +83,11 @@ defmodule Arbit.Track do
   #---------#
 
   @doc """
-  Parallely upsert each %Coindcx{} struct in Coindcx table
+  Insert each %Coindcx{} struct in Coindcx table
   """
   def upsert_coindcx_portfolio() do
-    Coindcx.fetch_portfolio()
-    |> Task.async_stream(&Repo.insert(&1,
-        on_conflict: {:replace, [:bid_price_usd, :bid_price_inr, :bid_price_btc, :ask_price_usd, :ask_price_inr, :ask_price_btc, :volume, :updated_at]},
-        conflict_target: [:coin, :quote_currency]))
-    |> Enum.map(fn {:ok, result} -> result end)
+    Repo.delete_all(Coindcx)
+    Repo.insert_all(Coindcx, Coindcx.fetch_portfolio() |> prepare_for_insert_all())
   end
 
   @doc """
@@ -112,14 +100,11 @@ defmodule Arbit.Track do
   #--------#
 
   @doc """
-  Parallely upsert each %Zebpay{} struct in Zebpay table
+  Inserts each %Zebpay{} struct in Zebpay table
   """
   def upsert_zebpay_portfolio() do
-    Zebpay.fetch_portfolio()
-    |> Task.async_stream(&Repo.insert(&1,
-        on_conflict: {:replace, [:bid_price_usd, :bid_price_inr, :bid_price_btc, :ask_price_usd, :ask_price_inr, :ask_price_btc, :volume, :updated_at]},
-        conflict_target: [:coin, :quote_currency]))
-    |> Enum.map(fn {:ok, result} -> result end)
+    Repo.delete_all(Zebpay)
+    Repo.insert_all(Zebpay, Zebpay.fetch_portfolio() |> prepare_for_insert_all())
   end
 
   @doc """
@@ -132,18 +117,35 @@ defmodule Arbit.Track do
   #---------#
 
   @doc """
-  Parallely upsert each %Binance{} struct in Zebpay table
+  Insert each %Binance{} struct in Zebpay table
   """
   def upsert_binance_portfolio() do
-    Binance.fetch_portfolio()
-    |> Task.async_stream(&Repo.insert(&1,
-        on_conflict: {:replace, [:price_usd, :price_inr, :price_btc, :updated_at]},
-        conflict_target: [:coin, :quote_currency]))
-    |> Enum.map(fn {:ok, result} -> result end)
+    Repo.delete_all(Binance)
+    Repo.insert_all(Binance, Binance.fetch_portfolio() |> prepare_for_insert_all())
   end
 
   @doc """
   Get all entries from Binance table
   """
   def list_binance, do: Repo.all(Binance)
+
+  #---------#
+  # Helpers #
+  #---------#
+
+  @doc """
+  Receives a list of schema structs where each struct is a coin pair
+  and returns a list of maps where each map is a sanitized coin pair
+  """
+  def prepare_for_insert_all(list_of_structs) do
+    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+
+    list_of_structs
+    |> Enum.map(fn x ->
+      x
+      |> Map.from_struct()
+      |> Map.drop([:__meta__, :id])
+      |> Map.merge(%{inserted_at: now, updated_at: now})
+    end)
+  end
 end

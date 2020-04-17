@@ -36,9 +36,12 @@ defmodule Arbit.Track.Coinbase do
     Jason.decode!(body, [keys: :atoms])
   end
 
+  # Track only USD and USDC pairs and ignore BTC pairs
+  # Accepts a list of coin pairs where each pair is a map
+  # Returns a list of coin pairs
   defp filter_relevant_pairs(pairs) do
     pairs
-    |> Enum.filter(& &1.quote_currency in ["USD", "BTC", "USDC"])
+    |> Enum.filter(& &1.quote_currency in ["USD", "USDC"])
     |> Enum.map(& &1.id)
   end
 
@@ -54,7 +57,7 @@ defmodule Arbit.Track.Coinbase do
     |> struct(%{coin: coin})
     |> struct(%{quote_currency: quote_currency})
     |> struct(%{price_usd: (if quote_currency in ["USD", "USDC"], do: body.price |> Float.parse() |> elem(0), else: nil)})
-    |> struct(%{price_btc: (if quote_currency == "BTC", do: body.price |> Float.parse() |> elem(0), else: nil)})
+    # |> struct(%{price_btc: (if quote_currency == "BTC", do: body.price |> Float.parse() |> elem(0), else: nil)})
   end
 
   defp fill_blank_price_inr(%Coinbase{price_usd: price_usd} = coin, conversion_amount) do
