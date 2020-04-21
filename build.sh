@@ -15,6 +15,5 @@ mix phx.digest
 # Custom tasks (like DB migrations)
 MIX_ENV=prod mix ecto.migrate
 
-# Remove the existing release directory & build the release
-rm -rf "_build"
-MIX_ENV=prod mix release
+# Build the release overwriting previous one
+MIX_ENV=prod mix release --overwrite
