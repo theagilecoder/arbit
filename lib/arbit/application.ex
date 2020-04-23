@@ -5,6 +5,7 @@ defmodule Arbit.Application do
     import Supervisor.Spec, warn: false
 
     children = [
+      {Phoenix.PubSub, name: Arbit.PubSub},
       Arbit.Repo,
       ArbitWeb.Endpoint,
       worker(Arbit.Scheduler, [])

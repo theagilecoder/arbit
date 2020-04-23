@@ -15,7 +15,7 @@ config :arbit, ArbitWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "IIUW9uOXRsC7+IdzPP7TBKvdIs6hZ2RzSnt4J7jzgMwafSsGnXm9Kk87Uv7zVC5S",
   render_errors: [view: ArbitWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Arbit.PubSub, adapter: Phoenix.PubSub.PG2]
+  pubsub_server: Arbit.PubSub
 
 # Configures Elixir's Logger
 config :logger, :console,
