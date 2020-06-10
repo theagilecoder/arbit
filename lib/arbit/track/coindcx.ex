@@ -38,7 +38,7 @@ defmodule Arbit.Track.Coindcx do
   end
 
   defp product_list do
-    %{body: body} = HTTPoison.get! url()
+    %{body: body} = HTTPoison.get!(url(), [], ssl: [verify: :verify_none])
     Jason.decode!(body, [keys: :atoms])
     # |> Map.keys() |> Enum.sort() |> IO.inspect(limit: :infinity, width: 0)
   end
