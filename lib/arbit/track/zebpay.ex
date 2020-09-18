@@ -48,11 +48,13 @@ defmodule Arbit.Track.Zebpay do
   end
 
   # Track only INR pairs and ignore BTC and USDT pairs
+  # Reject coins whose volume is null
   # Accepts a list of coin pairs where each pair is a map
   # Returns a list of coin pairs
   defp filter_relevant_pairs(pairs) do
     pairs
     |> Enum.filter(& &1.currency in ["INR"])
+    |> Enum.reject(&(&1.volume == nil))
   end
 
   # Given a coin map, Create a %Zebpay{} struct
@@ -97,4 +99,3 @@ defmodule Arbit.Track.Zebpay do
     end
   end
 end
-
