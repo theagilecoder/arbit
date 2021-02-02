@@ -19,12 +19,11 @@ jobs:
           cd arbit
           _build/prod/rel/arbit/bin/arbit stop
           git pull
-          chmod a+x ./build.sh
-          ./build.sh
+          asdf current
           # mix deps.get --only prod
           # MIX_ENV=prod mix compile
           # npm run deploy --prefix ./assets
           # mix phx.digest
           # MIX_ENV=prod mix ecto.migrate
           # MIX_ENV=prod mix release --overwrite
-          _build/prod/rel/arbit/bin/arbit daemon
+          # _build/prod/rel/arbit/bin/arbit daemon
