@@ -15,4 +15,14 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.TACGIGAU_PRIVATE_KEY }}
         port: 22
-        script: whoami
+        script: |
+          cd arbit
+          _build/prod/rel/arbit/bin/arbit stop
+          git pull
+          mix deps.get --only prod
+          MIX_ENV=prod mix compile
+          npm run deploy --prefix ./assets
+          mix phx.digest
+          MIX_ENV=prod mix ecto.migrate
+          MIX_ENV=prod mix release --overwrite
+          _build/prod/rel/arbit/bin/arbit daemon
