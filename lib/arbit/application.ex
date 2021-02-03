@@ -8,7 +8,7 @@ defmodule Arbit.Application do
       {Phoenix.PubSub, name: Arbit.PubSub},
       Arbit.Repo,
       ArbitWeb.Endpoint,
-      worker(Arbit.Scheduler, [])
+      Arbit.Scheduler
     ]
 
     opts = [strategy: :one_for_one, name: Arbit.Supervisor]

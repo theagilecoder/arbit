@@ -3,7 +3,7 @@ defmodule Arbit.Scheduler do
   alias Arbit.Track
   alias Arbit.Display
 
-  def start_link do
+  def start_link(_) do
     GenServer.start_link(__MODULE__, %{})
   end
 
