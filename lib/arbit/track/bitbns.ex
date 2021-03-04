@@ -28,6 +28,7 @@ defmodule Arbit.Track.Bitbns do
     product_list()
     |> filter_relevant_pairs()
     |> Enum.map(&create_bitbns_struct/1)
+    |> Enum.reject(&(&1.volume == 0.0))
     |> Enum.map(&fill_blank_bid_price_usd(&1, conversion_amount))
     |> Enum.map(&fill_blank_bid_price_inr(&1, conversion_amount))
     |> Enum.map(&fill_blank_ask_price_usd(&1, conversion_amount))
