@@ -38,3 +38,9 @@ npm-debug.log
 
 # Elixir LS directory
 /.elixir_ls/
+
+# .vscode folder
+/.vscode/
+
+# SQLTools extension files
+*.sql
