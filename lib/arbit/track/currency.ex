@@ -7,7 +7,7 @@ defmodule Arbit.Track.Currency do
 
   schema "currencies" do
     field :amount, :float
-    field :pair,   :string
+    field :pair, :string
 
     timestamps()
   end
@@ -17,8 +17,8 @@ defmodule Arbit.Track.Currency do
   """
   def fetch_currency() do
     # Call api and process JSON to get conversion
-    %{body: body} = HTTPoison.get! url()
-    body = Jason.decode!(body, [keys: :atoms])
+    %{body: body} = HTTPoison.get!(url())
+    body = Jason.decode!(body, keys: :atoms)
     %{data: %{rates: %{INR: conversion}}} = body
     conversion = conversion |> String.to_float() |> Float.round(2)
 
@@ -29,6 +29,6 @@ defmodule Arbit.Track.Currency do
   end
 
   defp url do
-    "https://api.coinbase.com/v2/exchange-rates"
+    "https://api.coinbase.com/v2/exchange-rates?currency=USD"
   end
 end
