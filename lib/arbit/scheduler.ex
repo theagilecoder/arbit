@@ -9,7 +9,7 @@ defmodule Arbit.Scheduler do
 
   # GenServer starts and calls :work
   def init(state) do
-    handle_info(:work, state)
+    # handle_info(:work, state)
     {:ok, state}
   end
 
