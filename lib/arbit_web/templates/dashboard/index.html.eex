@@ -67,6 +67,5 @@
 </table>
 
 <ul>
-  <li>* Last updated at IST Time <%= ist_time(@results) %></li>
   <li>* Percentages are calculated over the 1st exchange</li>
 </ul>
